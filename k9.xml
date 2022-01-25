@@ -1,28 +1,31 @@
 <?xml version="1.0" ?>
-<robot name="basic_mobile_bot" xmlns:xacro="http://ros.org/wiki/xacro">
+<robot name="k9_robot" xmlns:xacro="http://ros.org/wiki/xacro">
 
   <!-- ****************** ROBOT CONSTANTS *******************************  -->
   <!-- Define the size of the robot's main chassis in meters -->
   <xacro:property name="base_width" value="0.49"/>
   <xacro:property name="base_length" value="0.81"/>
-  <xacro:property name="base_height" value="0.02"/>
+  <xacro:property name="base_height" value="0.52"/>
 	
   <!-- Define the shape of the robot's two front wheels in meters -->
-  <xacro:property name="wheel_radius" value="0.14"/>
-  <xacro:property name="wheel_width" value="0.06939"/>
+  <xacro:property name="wheel_radius" value="0.06939"/>
+  <xacro:property name="wheel_width" value="0.014"/>
 
   <!-- x-axis points forward, y-axis points to left, z-axis points upwards -->
   <!-- Define the gap between the wheel and chassis along y-axis in meters -->
   <xacro:property name="wheel_ygap" value="0.1011"/>
 
   <!-- Position the wheels along the z-axis -->
-  <xacro:property name="wheel_zoff" value="0.05"/>
+  <xacro:property name="wheel_zoff" value="-0.03239"/>
 
   <!-- Position the wheels along the x-axis -->
-  <xacro:property name="wheel_xoff" value="0.221"/>
+  <xacro:property name="wheel_xoff" value="0.0"/>
 
   <!-- Position the caster wheel along the x-axis -->
-  <xacro:property name="caster_xoff" value="0.217"/>
+  <xacro:property name="caster_xoff" value="-0.298"/>
+
+  <!-- Position the caster wheel along the z-axis -->
+  <xacro:property name="caster_z_offset" value="-0.277"/>
 
   <!-- Define intertial property macros  -->
   <xacro:macro name="box_inertia" params="m w h d">
@@ -64,16 +67,44 @@
     <visual>
       <origin xyz="0 0 -0.05" rpy="1.5707963267949 0 3.141592654"/>
       <geometry>
-        <mesh filename="package://basic_mobile_robot/meshes/robot_base.stl" />
+        <mesh filename="package://k9_robot/meshes/k9.stl" scale = "1.0 1.0 1.0 1.0" />
       </geometry>
-      <material name="Red">
-        <color rgba="${255/255} ${0/255} ${0/255} 1.0"/>
+      <material name="K9Gray">
+        <color rgba="${67/255} ${70/255} ${75/255} 0.3"/>
+      </material>
+    </visual>
+
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <box size="${base_length} ${base_width} ${base_height}"/>
+      </geometry>
+      <material name="K9Gray">
+        <color rgba="${67/255} ${70/255} ${75/255} 0.3"/>
+      </material>
+    </visual>
+
+    <visual>
+      <origin xyz="0.336 0.0 0.3155" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <box size="0.43 0.18 0.295"/>
+      </geometry>
+      <material name="K9Gray">
+        <color rgba="${67/255} ${70/255} ${75/255} 0.3"/>
       </material>
     </visual>
 
     <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
       <geometry>
         <box size="${base_length} ${base_width} ${base_height}"/>
+      </geometry>
+    </collision>
+
+    <collision>
+      <origin xyz="0.336 0.0 0.3155" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <box size="0.43 0.18 0.295"/>
       </geometry>
     </collision>
 
@@ -135,7 +166,7 @@
   <link name="front_caster">
     <visual>
       <geometry>
-        <sphere radius="${(wheel_radius+wheel_zoff-(base_height/2))}"/>
+        <sphere radius="0.02"/>
       </geometry>
       <material name="White">
         <color rgba="${255/255} ${255/255} ${255/255} 1.0"/>
@@ -144,10 +175,10 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <sphere radius="${(wheel_radius+wheel_zoff-(base_height/2))}"/>
+        <sphere radius="0.02"/>
       </geometry>
     </collision>
-    <xacro:sphere_inertia m="10.05" r="${(wheel_radius+wheel_zoff-(base_height/2))}"/>
+    <xacro:sphere_inertia m="10.05" r="0.02"/>
   </link>
 
   <gazebo reference="front_caster">
@@ -159,27 +190,34 @@
   <joint name="caster_joint" type="fixed">
     <parent link="base_link"/>
     <child link="front_caster"/>
-    <origin xyz="${caster_xoff} 0.0 ${-(base_height/2)}" rpy="0 0 0"/>
+    <origin xyz="${caster_xoff} 0.0 ${-(caster_z_offset)}" rpy="0 0 0"/>
   </joint>
   
-  <!-- *********************** IMU SETUP *********************************  -->
-  <!-- Each sensor must be attached to a link.                              --> 
-  
-  <joint name="imu_joint" type="fixed">
+  <!-- *********************** LIDAR ********************************  -->
+  <joint name="lidar_joint" type="fixed">
     <parent link="base_link"/>
-    <child link="imu_link"/>
-    <origin xyz="-0.10 0 0.05" rpy="0 0 0"/>
+    <child link="lidar_link"/>
+    <origin xyz="-0.112	0.0	0.268" rpy="0 0 0"/>
   </joint>
 
-  <link name="imu_link"/>
+  <link name="lidar_link"/>
 
-  <!-- *********************** GPS SETUP **********************************  -->
-  <joint name="gps_joint" type="fixed">
+  <!-- ******************** EYE CAMERA ******************************  -->
+  <joint name="eyecam_joint" type="fixed">
     <parent link="base_link"/>
-    <child link="gps_link"/>
-    <origin xyz="0.10 0 0.05" rpy="0 0 0"/>
+    <child link="eyecam_link"/>
+    <origin xyz="0.366 0.0 0.373" rpy="0 0 0"/>
   </joint>
 
-  <link name="gps_link"/>
+  <link name="eyecam_link"/>
+
+  <!-- ******************** 3D CAMERA ******************************  -->
+  <joint name="3dcam_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="3dcam_link"/>
+    <origin xyz="0.206 0.0 -0.042" rpy="0 0 0"/>
+  </joint>
+
+  <link name="3dcam_link"/>
 
 </robot>
