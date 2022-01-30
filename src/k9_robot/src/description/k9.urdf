@@ -65,44 +65,46 @@
   <!-- ********************** ROBOT BASE *********************************  -->
   <link name="base_link">
     <visual>
-      <origin xyz="0 0 -0.05" rpy="1.5707963267949 0 3.141592654"/>
+      <origin xyz="-0.5 1.905 0.0" rpy="0 0 3.1415926"/>
       <geometry>
-        <mesh filename="package://k9_robot/meshes/k9.stl" scale = "1.0 1.0 1.0 1.0" />
+        <mesh filename="package://k9_robot/description/k9.stl" scale = "0.01 0.01 0.01" />
       </geometry>
       <material name="K9Gray">
-        <color rgba="${67/255} ${70/255} ${75/255} 0.3"/>
+        <color rgba="${67/255} ${70/255} ${75/255} 1"/>
       </material>
     </visual>
 
+    <!-- 
     <visual>
-      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <origin xyz="-0.119 0.0 0.26" rpy="0.0 0.0 0.0"/>
       <geometry>
         <box size="${base_length} ${base_width} ${base_height}"/>
       </geometry>
       <material name="K9Gray">
-        <color rgba="${67/255} ${70/255} ${75/255} 0.3"/>
+        <color rgba="${67/255} ${70/255} ${75/255} 0.2"/>
       </material>
     </visual>
 
     <visual>
-      <origin xyz="0.336 0.0 0.3155" rpy="0.0 0.0 0.0"/>
+      <origin xyz="0.336 0.0 0.5755" rpy="0.0 0.0 0.0"/>
       <geometry>
         <box size="0.43 0.18 0.295"/>
       </geometry>
       <material name="K9Gray">
-        <color rgba="${67/255} ${70/255} ${75/255} 0.3"/>
+        <color rgba="${67/255} ${70/255} ${75/255} 0.2"/>
       </material>
     </visual>
+    -->
 
     <collision>
-      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <origin xyz="-0.119 0.0 0.26" rpy="0.0 0.0 0.0"/>
       <geometry>
         <box size="${base_length} ${base_width} ${base_height}"/>
       </geometry>
     </collision>
 
     <collision>
-      <origin xyz="0.336 0.0 0.3155" rpy="0.0 0.0 0.0"/>
+      <origin xyz="0.336 0.0 0.5755" rpy="0.0 0.0 0.0"/>
       <geometry>
         <box size="0.43 0.18 0.295"/>
       </geometry>
