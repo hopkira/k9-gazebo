@@ -54,15 +54,6 @@
   <!-- ****************** ROBOT BASE FOOTPRINT ***************************  -->
   <!-- Define the center of the main robot chassis projected on the ground -->	
   <link name="base_footprint"/>
-    	<xacro:box_inertia m="0" w="0" d="0" h="0"/>
-  </link>
-
-  <!-- The base footprint of the robot is located underneath the chassis -->
-  <joint name="base_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="base_footprint" />
-    <origin xyz="0.0 0.0 ${(wheel_radius-wheel_zoff)}" rpy="0 0 0"/>
-  </joint>
 
   <!-- ********************** ROBOT BASE *********************************  -->
   <link name="base_link">
@@ -97,6 +88,13 @@
   <gazebo reference="base_link">
     <material>Gazebo/Red</material>
   </gazebo>
+
+  <!-- The base footprint of the robot is located underneath the chassis -->
+  <joint name="base_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="base_footprint" />
+    <origin xyz="0.0 0.0 ${(wheel_radius-wheel_zoff)}" rpy="0 0 0"/>
+  </joint>
 
   <!-- *********************** DRIVE WHEELS ******************************  -->
 
