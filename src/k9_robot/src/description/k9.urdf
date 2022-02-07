@@ -22,11 +22,11 @@
   <!-- Position the wheels along the x-axis -->
   <xacro:property name="wheel_xoff" value="0.0"/>
 
-  <!-- Position the caster wheel along the x-axis -->
-  <xacro:property name="caster_xoff" value="-0.298"/>
+  <!-- Position the castor wheel along the x-axis -->
+  <xacro:property name="castor_xoff" value="-0.298"/>
 
-  <!-- Position the caster wheel along the z-axis -->
-  <xacro:property name="caster_z_offset" value="-0.02"/>
+  <!-- Position the castor wheel along the z-axis -->
+  <xacro:property name="castor_z_offset" value="-0.02"/>
 
   <!-- Define intertial property macros  -->
   <xacro:macro name="box_inertia" params="m w h d">
@@ -140,11 +140,11 @@
   <xacro:wheel prefix="drivewhl_l" x_reflect="-1" y_reflect="1" />
   <xacro:wheel prefix="drivewhl_r" x_reflect="-1" y_reflect="-1" />
 
-  <!-- *********************** CASTER WHEEL ******************************  -->
-  <!-- We add a caster wheel. It will be modeled as sphere.
+  <!-- *********************** castor WHEEL ******************************  -->
+  <!-- We add a castor wheel. It will be modeled as sphere.
        We define the wheel’s geometry, material and the joint to connect it to 
        base_link at the appropriate location. -->
-  <link name="front_caster">
+  <link name="rear_castor">
     <visual>
       <geometry>
         <sphere radius="0.02"/>
@@ -162,16 +162,16 @@
     <xacro:sphere_inertia m="10.05" r="0.02"/>
   </link>
 
-  <gazebo reference="front_caster">
+  <gazebo reference="rear_castor">
     <mu1>0.01</mu1>
     <mu2>0.01</mu2>
     <material>Gazebo/White</material>
   </gazebo>
 
-  <joint name="caster_joint" type="fixed">
+  <joint name="castor_joint" type="fixed">
     <parent link="base_link"/>
-    <child link="front_caster"/>
-    <origin xyz="${caster_xoff} 0.0 ${-(caster_z_offset)}" rpy="0 0 0"/>
+    <child link="rear_castor"/>
+    <origin xyz="${castor_xoff} 0.0 ${-(castor_z_offset)}" rpy="0 0 0"/>
   </joint>
   
   <!-- *********************** LIDAR ********************************  -->
