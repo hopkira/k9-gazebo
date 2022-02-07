@@ -201,4 +201,22 @@
 
   <link name="3dcam_link"/>
 
+  <!-- ******************** LEFT EAR ******************************  -->
+  <joint name="l_ear_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="l_ear_link"/>
+    <origin xyz="0.35 -0.045 0.725" rpy="0 -0.65 0"/>
+  </joint>
+
+  <link name="l_ear_link"/>
+
+  <!-- ******************** RIGHT EAR ******************************  -->
+  <joint name="r_ear_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="r_ear_link"/>
+    <origin xyz="0.35 0.045 0.725" rpy="0 -0.65 0"/>
+  </joint>
+
+  <link name="r_ear_link"/>
+
 </robot>
