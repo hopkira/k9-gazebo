@@ -64,14 +64,14 @@
         <mesh filename="package://k9_robot/description/k9.stl" scale = "0.01 0.01 0.01" />
       </geometry>
       <material name="K9Gray">
-        <color rgba="${67/255} ${70/255} ${75/255} 1"/>
+        <color rgba="0.25 0.25 0.25 1.0"/>
       </material>
     </visual>
 
     <collision>
       <origin xyz="-0.119 0.0 0.297" rpy="0.0 0.0 0.0"/>
       <geometry>
-        <box size="${base_length} ${base_width} ${base_height}"/>
+        <box size="0.89 0.49 0.52"/>
       </geometry>
     </collision>
 
@@ -102,12 +102,12 @@
   <xacro:macro name="wheel" params="prefix x_reflect y_reflect">
     <link name="${prefix}_link">
       <visual>
-        <origin xyz="0 0 0" rpy="1.5707963267949 0 0"/>
+        <origin xyz="0.0 0.0 0.0" rpy="1.5707963267949 0.0 0.0"/>
         <geometry>
             <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
         </geometry>
         <material name="White">
-          <color rgba="${255/255} ${255/255} ${255/255} 1.0"/>
+          <color rgba="1.0 1.0 1.0 1.0"/>
         </material>
       </visual>
       
@@ -150,11 +150,11 @@
         <sphere radius="0.02"/>
       </geometry>
       <material name="White">
-        <color rgba="${255/255} ${255/255} ${255/255} 1.0"/>
+        <color rgba="1.0 1.0 1.0 1.0"/>
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
       <geometry>
         <sphere radius="0.02"/>
       </geometry>
@@ -171,52 +171,61 @@
   <joint name="castor_joint" type="fixed">
     <parent link="base_link"/>
     <child link="rear_castor"/>
-    <origin xyz="${castor_xoff} 0.0 ${-(castor_z_offset)}" rpy="0 0 0"/>
+    <origin xyz="-0.298 0.0 0.02" rpy="0 0 0"/>
   </joint>
   
   <!-- *********************** LIDAR ********************************  -->
+  <link name="lidar_link"/>
+  
   <joint name="lidar_joint" type="fixed">
     <parent link="base_link"/>
     <child link="lidar_link"/>
-    <origin xyz="-0.112	0.0	0.565" rpy="0 0 0"/>
+    <origin xyz="-0.112	0.0	0.565" rpy="0.0 0.0 0.0"/>
   </joint>
 
-  <link name="lidar_link"/>
-
+  
   <!-- ******************** EYE CAMERA ******************************  -->
+  <link name="eyecam_link"/>
+ 
   <joint name="eyecam_joint" type="fixed">
     <parent link="base_link"/>
     <child link="eyecam_link"/>
-    <origin xyz="0.366 0.0 0.67" rpy="0 0 0"/>
+    <origin xyz="0.366 0.0 0.67" rpy="0.0 0.0 0.0"/>
   </joint>
 
-  <link name="eyecam_link"/>
+ 
 
   <!-- ******************** 3D CAMERA ******************************  -->
+  <link name="3dcam_link"/>
+  
   <joint name="3dcam_joint" type="fixed">
     <parent link="base_link"/>
     <child link="3dcam_link"/>
-    <origin xyz="0.206 0.0 0.255" rpy="0 0 0"/>
+    <origin xyz="0.206 0.0 0.255" rpy="0.0 0.0 0.0"/>
   </joint>
 
-  <link name="3dcam_link"/>
+  
 
   <!-- ******************** LEFT EAR ******************************  -->
+  <link name="l_ear_link"/>
+ 
   <joint name="l_ear_joint" type="fixed">
     <parent link="base_link"/>
     <child link="l_ear_link"/>
-    <origin xyz="0.35 -0.045 0.725" rpy="0 -0.65 0"/>
+    <origin xyz="0.35 0.045 0.725" rpy="0.0 0.65 0.0"/>
   </joint>
 
-  <link name="l_ear_link"/>
+ 
 
   <!-- ******************** RIGHT EAR ******************************  -->
+  <link name="r_ear_link"/> 
+
   <joint name="r_ear_joint" type="fixed">
     <parent link="base_link"/>
     <child link="r_ear_link"/>
-    <origin xyz="0.35 0.045 0.725" rpy="0 -0.65 0"/>
+    <origin xyz="0.35 -0.045 0.725" rpy="0.0 0.65 0.0"/>
   </joint>
 
-  <link name="r_ear_link"/>
+
 
 </robot>
