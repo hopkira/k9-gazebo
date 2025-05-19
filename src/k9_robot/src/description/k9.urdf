@@ -1,6 +1,22 @@
 <?xml version="1.0" ?>
 <robot name="k9_robot" xmlns:xacro="http://ros.org/wiki/xacro">
 
+  <material name="K9 grey">
+    <color rgba="0.25 0.25 0.25 0.1" />
+  </material>
+
+  <material name="perspex red">
+    <color rgba="1.0 0.1 0.1 1.0" />
+  </material>
+
+  <material name="wheel grey">
+    <color rgba="0.7 0.7 0.7 1.0"/>
+  </material>
+
+  <material name="white">
+    <color rgba="1.0 1.0 1.0 1.0"/>
+  </material>
+
   <!-- ****************** ROBOT CONSTANTS *******************************  -->
   <!-- https://answers.gazebosim.org//question/24436/how-to-specify-urdf-link-which-attaches-to-world-ground/ -->
   <!-- Define the size of the robot's main chassis in meters -->
@@ -59,13 +75,11 @@
   <!-- ********************** ROBOT BASE *********************************  -->
   <link name="base_link">
     <visual>
-      <origin xyz="-0.5 1.905 0" rpy="0 0 3.1415926"/>
+      <origin xyz="-0.5 1.905 0" rpy="0 0 ${pi}"/>
       <geometry>
         <mesh filename="package://k9_robot/description/k9.stl" scale = "0.01 0.01 0.01" />
       </geometry>
-      <material name="K9Gray">
-        <color rgba="0.25 0.25 0.25 1.0"/>
-      </material>
+      <material name="K9 grey" />
     </visual>
 
     <collision>
@@ -87,7 +101,7 @@
   </link>
 
   <gazebo reference="base_link">
-    <material>Gazebo/Red</material>
+    <material name="Perspex red" />
   </gazebo>
 
   <!-- The base footprint of the robot is located underneath the chassis -->
@@ -102,26 +116,20 @@
   <xacro:macro name="wheel" params="prefix x_reflect y_reflect">
     <link name="${prefix}_link">
       <visual>
-        <origin xyz="0.0 0.0 0.0" rpy="1.5707963267949 0.0 0.0"/>
+        <origin xyz="${x_reflect*wheel_xoff} ${y_reflect*wheel_ygap} ${wheel_radius}" rpy="${pi/2} 0.0 0.0"/>
         <geometry>
             <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
         </geometry>
-        <material name="White">
-          <color rgba="1.0 1.0 1.0 1.0"/>
-        </material>
+        <material name="wheel gray"/>
       </visual>
-      
       <collision>
-        <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+        <origin xyz="${x_reflect*wheel_xoff} ${y_reflect*wheel_ygap} ${wheel_radius}" rpy="${pi/2} 0.0 0.0"/>
         <geometry>
-          <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+          <sphere radius="${wheel_radius}"/>
         </geometry>
       </collision>
-      
       <xacro:cylinder_inertia m="110.5" r="${wheel_radius}" h="${wheel_width}"/>
-      
     </link>
-
     <!-- Connect the wheels to the base_link at the appropriate location, and 
          define a continuous joint to allow the wheels to freely rotate about
          an axis -->
@@ -129,7 +137,7 @@
       <parent link="base_link"/>
       <child link="${prefix}_link"/>
       <origin xyz="${x_reflect*wheel_xoff} ${y_reflect*wheel_ygap} ${wheel_radius}" rpy="0 0 0"/>
-      <limit upper="3.1415" lower="-3.1415" effort="30" velocity="5.0"/>
+      <limit upper="${pi}" lower="${-pi}" effort="30" velocity="5.0"/>
       <axis xyz="0 1 0"/>
     </joint>
   </xacro:macro>
@@ -149,9 +157,7 @@
       <geometry>
         <sphere radius="0.02"/>
       </geometry>
-      <material name="White">
-        <color rgba="1.0 1.0 1.0 1.0"/>
-      </material>
+      <material name="White" />
     </visual>
     <collision>
       <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
@@ -165,7 +171,7 @@
   <gazebo reference="rear_castor">
     <mu1>0.01</mu1>
     <mu2>0.01</mu2>
-    <material>Gazebo/White</material>
+    <material name="white"/>
   </gazebo>
 
   <joint name="castor_joint" type="fixed">
@@ -225,7 +231,6 @@
     <child link="r_ear_link"/>
     <origin xyz="0.35 -0.045 0.725" rpy="0.0 0.65 0.0"/>
   </joint>
-
 
 
 </robot>
