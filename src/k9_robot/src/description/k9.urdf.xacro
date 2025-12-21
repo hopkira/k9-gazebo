@@ -4,7 +4,7 @@
   <!-- ===================== Materials ===================== -->
   <material name="K9_grey">
     <!-- NOTE: the model is largely transparent in RViz -->
-    <color rgba="0.25 0.25 0.25 0.1" />
+    <color rgba="0.25 0.25 0.25 0.3" />
   </material>
 
   <material name="perspex_red">
@@ -87,7 +87,7 @@
     <visual>
       <origin xyz="-0.5 1.905 0" rpy="0 0 ${pi}"/>
       <geometry>
-        <mesh filename="package://k9_robot/description/k9.stl" scale="0.01 0.01 0.01"/>
+        <mesh filename="file:///home/hopkira/Documents/GitHub/k9-gazebo/src/k9_description/urdf/k9.stl" scale="0.01 0.01 0.01"/>
       </geometry>
       <material name="K9_grey"/>
     </visual>
@@ -107,15 +107,15 @@
       </geometry>
     </collision>
 
-  <inertial>
-    <!-- COM aligned with wheel contact midpoint (x=0) -->
-    <origin xyz="0 0 0.33197" rpy="0 0 0"/>
-    <mass value="27.0"/>
-    <inertia
-      ixx="0.98230"  ixy="0.0"      ixz="-0.29015"
-      iyy="2.21069"  iyz="0.0"
-      izz="2.03021"/>
-  </inertial>
+    <inertial>
+      <!-- Shift COM slightly behind wheel contact line to prevent nose tipping -->
+      <origin xyz="-0.02 0 0.15" rpy="0 0 0"/>
+      <mass value="27.0"/>
+      <inertia
+        ixx="0.98230"  ixy="0.0"  ixz="0.0"
+        iyy="2.4"  iyz="0.0"
+        izz="2.03021"/>
+    </inertial>
 
   </link>
 
@@ -145,13 +145,14 @@
     </link>
 
     <joint name="${prefix}_joint" type="continuous">
-      <parent link="base_link"/>
+      <parent link="base_footprint"/>
       <child link="${prefix}_link"/>
-      <origin xyz="${x} ${y} 0.0" rpy="0 0 0"/>
+      <!-- wheel center is wheel_radius above ground -->
+      <origin xyz="${x} ${y} ${wheel_radius}" rpy="0 0 0"/>
       <axis xyz="0 1 0"/>
-      <!-- Small damping reduces wheel jitter in contact dynamics -->
       <dynamics damping="0.05" friction="0.0"/>
     </joint>
+
   </xacro:macro>
 
   <xacro:wheel prefix="drivewhl_l" x="${wheel_xoff}" y="${ track/2}" />
