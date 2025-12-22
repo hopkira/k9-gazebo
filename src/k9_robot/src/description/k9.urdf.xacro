@@ -3,7 +3,6 @@
 
   <!-- ===================== Materials ===================== -->
   <material name="K9_grey">
-    <!-- NOTE: the model is largely transparent in RViz -->
     <color rgba="0.25 0.25 0.25 1.0" />
   </material>
 
@@ -60,9 +59,11 @@
     </inertial>
   </xacro:macro>
 
-  <xacro:macro name="cylinder_inertia" params="m r h">
+  <!-- Cylinder inertia about its own center.
+      rpy must match the cylinder geometry orientation -->
+  <xacro:macro name="cylinder_inertia" params="m r h rpy:='0 0 0'">
     <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="${rpy}"/>
       <mass value="${m}"/>
       <inertia
         ixx="${(m/12) * (3*r*r + h*h)}" ixy="0" ixz="0"
@@ -108,13 +109,14 @@
     </collision>
 
     <inertial>
-      <!-- Shift COM slightly behind wheel contact line to prevent nose tipping -->
-      <origin xyz="-0.02 0 0.15" rpy="0 0 0"/>
+      <!-- Recomputed from 5 internal mass boxes (total 25.0 kg).
+          Origin is COM expressed in base_link frame. -->
+      <origin xyz="-0.090992 0 0.177274" rpy="0 0 0"/>
       <mass value="25.0"/>
       <inertia
-        ixx="0.98230"  ixy="0.0"  ixz="0.0"
-        iyy="2.4"  iyz="0.0"
-        izz="2.03021"/>
+        ixx="1.175508"  ixy="0.0"      ixz="-0.512311"
+        iyy="2.263333"  iyz="0.0"
+        izz="1.639449"/>
     </inertial>
 
   </link>
@@ -141,7 +143,11 @@
           <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
         </geometry>
       </collision>
-      <xacro:cylinder_inertia m="1.0" r="${wheel_radius}" h="${wheel_width}"/>
+      <xacro:cylinder_inertia
+        m="1.0"
+        r="${wheel_radius}"
+        h="${wheel_width}"
+        rpy="${pi/2} 0 0"/>
     </link>
 
     <joint name="${prefix}_joint" type="continuous">
@@ -177,9 +183,11 @@
   </link>
 
   <joint name="caster_swivel_joint" type="continuous">
-    <parent link="base_link"/>
+    <parent link="base_footprint"/>
     <child link="caster_swivel_link"/>
-    <origin xyz="${caster_mount_x} ${caster_mount_y} ${caster_mount_z}" rpy="0 0 0"/>
+    <!-- caster_mount_z is already defined relative to axle height;
+        convert to base_footprint by adding wheel_radius -->
+    <origin xyz="${caster_mount_x} ${caster_mount_y} ${caster_mount_z + wheel_radius}" rpy="0 0 0"/>
     <axis xyz="0 0 1"/>
     <dynamics damping="0.8" friction="0.0"/>
   </joint>
@@ -198,7 +206,11 @@
         <cylinder radius="${caster_wheel_radius}" length="${caster_wheel_width}"/>
       </geometry>
     </collision>
-    <xacro:cylinder_inertia m="0.10" r="${caster_wheel_radius}" h="${caster_wheel_width}"/>
+    <xacro:cylinder_inertia
+      m="0.10"
+      r="${caster_wheel_radius}"
+      h="${caster_wheel_width}"
+      rpy="${pi/2} 0 0"/>
   </link>
 
   <joint name="caster_wheel_joint" type="continuous">
