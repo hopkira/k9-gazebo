@@ -2,22 +2,22 @@
   <model name='k9_robot'>
     <link name='base_footprint'>
       <inertial>
-        <pose>-0.018087371512481638 0 0.2223360352422907 0 0 0</pose>
-        <mass>27.239999999999998</mass>
+        <pose>-0.01793581616481775 8.5911424127219048e-21 0.2225694770206022 0 0 0</pose>
+        <mass>25.239999999999998</mass>
         <inertia>
-          <ixx>1.0186533306718071</ixx>
-          <ixy>0</ixy>
-          <ixz>-0.018856511563876629</ixz>
-          <iyy>2.4546292827276068</iyy>
-          <iyz>0</iyz>
-          <izz>2.0486979520558011</izz>
+          <ixx>1.0186345969690971</ixx>
+          <ixy>-3.8892101702392073e-21</ixy>
+          <ixz>-0.018844349247226621</ixz>
+          <iyy>2.4546026529912832</iyy>
+          <iyz>3.3215504353186073e-20</iyz>
+          <izz>2.048690056022187</izz>
         </inertia>
       </inertial>
       <collision name='base_footprint_fixed_joint_lump__base_link_collision'>
-        <pose>-0.11899999999999999 0 0.38439000000000001 0 0 0</pose>
+        <pose>-0.11899999999999999 0 0.35438999999999998 0 0 0</pose>
         <geometry>
           <box>
-            <size>0.89000000000000001 0.48999999999999999 0.34999999999999998</size>
+            <size>0.89000000000000001 0.48999999999999999 0.48999999999999999</size>
           </box>
         </geometry>
       </collision>
@@ -38,8 +38,8 @@
           </mesh>
         </geometry>
         <material>
-          <diffuse>0.3125 0.3125 0.3125 0.300000012</diffuse>
-          <ambient>0.3125 0.3125 0.3125 0.300000012</ambient>
+          <diffuse>0.3125 0.3125 0.3125 1</diffuse>
+          <ambient>0.3125 0.3125 0.3125 1</ambient>
         </material>
       </visual>
     </link>
@@ -191,14 +191,14 @@
       <pose relative_to='drivewhl_l_joint'>0 0 0 0 0 0</pose>
       <inertial>
         <pose>0 0 0 0 0 0</pose>
-        <mass>0.29999999999999999</mass>
+        <mass>1</mass>
         <inertia>
-          <ixx>0.00037674790749999987</ixx>
+          <ixx>0.0012558263583333331</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>0.00037674790749999987</iyy>
+          <iyy>0.0012558263583333331</iyy>
           <iyz>0</iyz>
-          <izz>0.00072224581499999994</izz>
+          <izz>0.0024074860500000001</izz>
         </inertia>
       </inertial>
       <collision name='drivewhl_l_link_collision'>
@@ -262,14 +262,14 @@
       <pose relative_to='drivewhl_r_joint'>0 0 0 0 0 0</pose>
       <inertial>
         <pose>0 0 0 0 0 0</pose>
-        <mass>0.29999999999999999</mass>
+        <mass>1</mass>
         <inertia>
-          <ixx>0.00037674790749999987</ixx>
+          <ixx>0.0012558263583333331</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>0.00037674790749999987</iyy>
+          <iyy>0.0012558263583333331</iyy>
           <iyz>0</iyz>
-          <izz>0.00072224581499999994</izz>
+          <izz>0.0024074860500000001</izz>
         </inertia>
       </inertial>
       <collision name='drivewhl_r_link_collision'>

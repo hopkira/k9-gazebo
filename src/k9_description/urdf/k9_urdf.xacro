@@ -82,8 +82,7 @@
         <box size="0.2 0.18 0.1"/>
       </geometry>
     </collision>
-
-    <xacro:box_inertia m="40.0" x="${base_length*.8}" y="${base_width}" z="${base_height/2}" o_xyz="0 0 ${base_clearance+(base_height/4)}" o_rpy="0 0 0"/>
+    <xacro:box_inertia m="27.0" x="${base_length*.8}" y="${base_width}" z="${base_height/2}" o_xyz="0 0 ${base_clearance+(base_height/4)}" o_rpy="0 0 0"/>
   </link>
 
   <!-- MESH -->

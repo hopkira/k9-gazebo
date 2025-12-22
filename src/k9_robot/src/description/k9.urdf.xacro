@@ -4,7 +4,7 @@
   <!-- ===================== Materials ===================== -->
   <material name="K9_grey">
     <!-- NOTE: the model is largely transparent in RViz -->
-    <color rgba="0.25 0.25 0.25 0.3" />
+    <color rgba="0.25 0.25 0.25 1.0" />
   </material>
 
   <material name="perspex_red">
@@ -94,9 +94,9 @@
 
     <!-- Collision layout avoids wheels and mirrors head/body -->
     <collision>
-      <origin xyz="-0.119 0.0 0.315" rpy="0.0 0.0 0.0"/>
+      <origin xyz="-0.119 0.0 0.285" rpy="0.0 0.0 0.0"/>
       <geometry>
-        <box size="0.89 0.49 0.35"/>
+        <box size="0.89 0.49 0.49"/>
       </geometry>
     </collision>
 
@@ -110,7 +110,7 @@
     <inertial>
       <!-- Shift COM slightly behind wheel contact line to prevent nose tipping -->
       <origin xyz="-0.02 0 0.15" rpy="0 0 0"/>
-      <mass value="27.0"/>
+      <mass value="25.0"/>
       <inertia
         ixx="0.98230"  ixy="0.0"  ixz="0.0"
         iyy="2.4"  iyz="0.0"
@@ -141,7 +141,7 @@
           <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
         </geometry>
       </collision>
-      <xacro:cylinder_inertia m="0.30" r="${wheel_radius}" h="${wheel_width}"/>
+      <xacro:cylinder_inertia m="1.0" r="${wheel_radius}" h="${wheel_width}"/>
     </link>
 
     <joint name="${prefix}_joint" type="continuous">
