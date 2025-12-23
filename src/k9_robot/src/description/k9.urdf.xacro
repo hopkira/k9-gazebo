@@ -18,6 +18,8 @@
     <color rgba="1.0 1.0 1.0 1.0"/>
   </material>
 
+  <xacro:property name="pi" value="3.141592653589793"/>
+
   <!-- ===================== Robot constants ===================== -->
   <!-- Chassis dims (m) -->
   <xacro:property name="base_width"  value="0.49"/>
