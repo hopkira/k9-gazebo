@@ -12,6 +12,14 @@
     <color rgba="0.7 0.7 0.7 1.0"/>
   </material>
 
+  <material name="k9_ear_emissive">
+  <color rgba="0 0 0 1"/>
+  </material>
+
+  <material name="k9_beam_material">
+    <color rgba="0 1 0 1"/>
+  </material>
+
   <!-- ===================================================== -->
   <!-- Constants                                             -->
   <!-- ===================================================== -->
@@ -219,7 +227,7 @@
     <sensor name="ld06_lidar" type="gpu_lidar">
       <update_rate>10</update_rate>
       <always_on>true</always_on>
-      <topic>/world/empty/model/k9_robot/ld06/scan</topic>
+      <topic>/scan</topic>
       <pose>0 0 0 0 0 0</pose>
       <visualize>true</visualize>
       <lidar>
@@ -235,8 +243,6 @@
           <max>12.0</max>
         </range>
       </lidar>
-      <always_on>true</always_on>
-      <visualize>true</visualize>
     </sensor>
   </gazebo>
 
@@ -253,6 +259,104 @@
     <child link="3dcam_link"/>
     <origin xyz="0.206 0 0.255"/>
   </joint>
+
+  <!-- ******************** LEFT EAR ****************************** -->
+
+<link name="l_ear_link">
+
+  <!-- Visual (for Gazebo visualisation) -->
+  <visual name="l_ear_visual">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <box size="0.015 0.02 0.03"/>
+    </geometry>
+    <material name="k9_ear_emissive">
+      <ambient>0 0 0 1</ambient>
+      <diffuse>0 0 0 1</diffuse>
+      <emissive>0 0 0 1</emissive> <!-- will be driven by Gazebo -->
+    </material>
+  </visual>
+
+  <visual name="l_ear_beam_visual">
+    <origin xyz="1.0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <cone radius="0.01" length="2.0"/>
+    </geometry>
+    <material name="k9_beam_material">
+      <ambient>0 0 0 1</ambient>
+      <diffuse>0 0 0 1</diffuse>
+      <emissive>0 1 0 1</emissive>
+    </material>
+    <transparency>0.6</transparency>
+  </visual>
+
+  <!-- Inertia -->
+  <xacro:box_inertia
+    m="0.05"
+    x="0.015"
+    y="0.02"
+    z="0.03"
+    o_xyz="0 0 0"
+    o_rpy="0 0 0"/>
+</link>
+
+<joint name="l_ear_joint" type="revolute">
+  <parent link="base_link"/>
+  <child link="l_ear_link"/>
+  <origin xyz="0.165 0.04 0.74" rpy="0.0 0.25 0.0"/>
+  <axis xyz="0 0 1"/>
+  <limit lower="-0.2" upper="0.6" effort="0.1" velocity="10"/>
+  <dynamics friction="0.1" damping="0.1"/>
+</joint>
+
+
+<!-- ******************** RIGHT EAR ****************************** -->
+
+<link name="r_ear_link">
+
+  <visual name="r_ear_visual">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <box size="0.015 0.02 0.03"/>
+    </geometry>
+    <material name="k9_ear_emissive">
+      <ambient>0 0 0 1</ambient>
+      <diffuse>0 0 0 1</diffuse>
+      <emissive>0 0 0 1</emissive>
+    </material>
+  </visual>
+
+  <visual name="r_ear_beam_visual">
+    <origin xyz="1.0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <cone radius="0.01" length="2.0"/>
+    </geometry>
+    <material name="k9_beam_material">
+      <ambient>0 0 0 1</ambient>
+      <diffuse>0 0 0 1</diffuse>
+      <emissive>0 1 0 1</emissive>
+    </material>
+    <transparency>0.6</transparency>
+  </visual>
+
+  <xacro:box_inertia
+    m="0.05"
+    x="0.015"
+    y="0.02"
+    z="0.03"
+    o_xyz="0 0 0"
+    o_rpy="0 0 0"/>
+</link>
+
+<joint name="r_ear_joint" type="revolute">
+  <parent link="base_link"/>
+  <child link="r_ear_link"/>
+  <origin xyz="0.165 -0.04 0.74" rpy="0.0 0.25 0.0"/>
+  <axis xyz="0 0 1"/>
+  <limit lower="-0.6" upper="0.2" effort="0.1" velocity="10"/>
+  <dynamics friction="0.1" damping="0.1"/>
+</joint>
+
 
   <!-- ===================================================== -->
   <!-- Gazebo Diff Drive (gz-sim, Jazzy)                     -->
