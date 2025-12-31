@@ -31,6 +31,7 @@
   <xacro:property name="ball_radius"  value="0.04"/>
   <xacro:property name="ball_x"       value="-0.30"/>
 
+  
   <!-- ===================================================== -->
   <!-- Helper macros                                         -->
   <!-- ===================================================== -->
@@ -227,7 +228,7 @@
     <sensor name="ld06_lidar" type="gpu_lidar">
       <update_rate>10</update_rate>
       <always_on>true</always_on>
-      <topic>/scan</topic>
+      <topic>/world/empty/model/k9_robot/ld06/scan</topic>
       <pose>0 0 0 0 0 0</pose>
       <visualize>true</visualize>
       <lidar>
@@ -278,9 +279,9 @@
   </visual>
 
   <visual name="l_ear_beam_visual">
-    <origin xyz="1.0 0 0" rpy="0 0 0"/>
+    <origin xyz="1.0 0 0" rpy="0 ${pi/2} 0"/>
     <geometry>
-      <cone radius="0.01" length="2.0"/>
+      <cylinder radius="0.01" length="2.0"/>
     </geometry>
     <material name="k9_beam_material">
       <ambient>0 0 0 1</ambient>
@@ -291,13 +292,8 @@
   </visual>
 
   <!-- Inertia -->
-  <xacro:box_inertia
-    m="0.05"
-    x="0.015"
-    y="0.02"
-    z="0.03"
-    o_xyz="0 0 0"
-    o_rpy="0 0 0"/>
+  <xacro:tiny_inertial m="0.05"/>
+
 </link>
 
 <joint name="l_ear_joint" type="revolute">
@@ -327,9 +323,9 @@
   </visual>
 
   <visual name="r_ear_beam_visual">
-    <origin xyz="1.0 0 0" rpy="0 0 0"/>
+    <origin xyz="1.0 0 0" rpy="0 ${pi/2} 0"/>
     <geometry>
-      <cone radius="0.01" length="2.0"/>
+      <cylinder radius="0.01" length="2.0"/>
     </geometry>
     <material name="k9_beam_material">
       <ambient>0 0 0 1</ambient>
@@ -339,13 +335,7 @@
     <transparency>0.6</transparency>
   </visual>
 
-  <xacro:box_inertia
-    m="0.05"
-    x="0.015"
-    y="0.02"
-    z="0.03"
-    o_xyz="0 0 0"
-    o_rpy="0 0 0"/>
+  <xacro:tiny_inertial m="0.05"/>
 </link>
 
 <joint name="r_ear_joint" type="revolute">

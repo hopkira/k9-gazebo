@@ -89,8 +89,6 @@
             <max>12</max>
           </range>
         </lidar>
-        <always_on>true</always_on>
-        <visualize>true</visualize>
         <pose>-0.112 0 0.59940000000000004 0 0 0</pose>
       </sensor>
     </link>
@@ -204,6 +202,126 @@
         </material>
       </visual>
     </link>
+    <joint name='l_ear_joint' type='revolute'>
+      <pose relative_to='base_footprint'>0.16500000000000001 0.040000000000000001 0.80940000000000001 0 0.25000000000000017 0</pose>
+      <parent>base_footprint</parent>
+      <child>l_ear_link</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-0.20000000000000001</lower>
+          <upper>0.59999999999999998</upper>
+          <effort>0.10000000000000001</effort>
+          <velocity>10</velocity>
+        </limit>
+        <dynamics>
+          <damping>0.10000000000000001</damping>
+          <friction>0.10000000000000001</friction>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='l_ear_link'>
+      <pose relative_to='l_ear_joint'>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>0 0 0 0 0 0</pose>
+        <mass>0.050000000000000003</mass>
+        <inertia>
+          <ixx>0.0001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0001</iyy>
+          <iyz>0</iyz>
+          <izz>0.0001</izz>
+        </inertia>
+      </inertial>
+      <visual name='l_ear_link_fixed_joint_lump__l_ear_visual_visual'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.014999999999999999 0.02 0.029999999999999999</size>
+          </box>
+        </geometry>
+        <material>
+          <diffuse>0 0 0 1</diffuse>
+          <ambient>0 0 0 1</ambient>
+        </material>
+      </visual>
+      <visual name='l_ear_link_fixed_joint_lump__l_ear_beam_visual_visual_1'>
+        <pose>1 0 0 0 1.5707963267948966 0</pose>
+        <geometry>
+          <cylinder>
+            <length>2</length>
+            <radius>0.01</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <diffuse>0 1 0 1</diffuse>
+          <ambient>0 1 0 1</ambient>
+        </material>
+      </visual>
+    </link>
+    <joint name='r_ear_joint' type='revolute'>
+      <pose relative_to='base_footprint'>0.16500000000000001 -0.040000000000000001 0.80940000000000001 0 0.25000000000000017 0</pose>
+      <parent>base_footprint</parent>
+      <child>r_ear_link</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-0.59999999999999998</lower>
+          <upper>0.20000000000000001</upper>
+          <effort>0.10000000000000001</effort>
+          <velocity>10</velocity>
+        </limit>
+        <dynamics>
+          <damping>0.10000000000000001</damping>
+          <friction>0.10000000000000001</friction>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='r_ear_link'>
+      <pose relative_to='r_ear_joint'>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>0 0 0 0 0 0</pose>
+        <mass>0.050000000000000003</mass>
+        <inertia>
+          <ixx>0.0001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0001</iyy>
+          <iyz>0</iyz>
+          <izz>0.0001</izz>
+        </inertia>
+      </inertial>
+      <visual name='r_ear_link_fixed_joint_lump__r_ear_visual_visual'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.014999999999999999 0.02 0.029999999999999999</size>
+          </box>
+        </geometry>
+        <material>
+          <diffuse>0 0 0 1</diffuse>
+          <ambient>0 0 0 1</ambient>
+        </material>
+      </visual>
+      <visual name='r_ear_link_fixed_joint_lump__r_ear_beam_visual_visual_1'>
+        <pose>1 0 0 0 1.5707963267948966 0</pose>
+        <geometry>
+          <cylinder>
+            <length>2</length>
+            <radius>0.01</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <diffuse>0 1 0 1</diffuse>
+          <ambient>0 1 0 1</ambient>
+        </material>
+      </visual>
+    </link>
     <plugin name='gz::sim::systems::DiffDrive' filename='gz-sim-diff-drive-system'>
       <left_joint>drivewhl_l_joint</left_joint>
       <right_joint>drivewhl_r_joint</right_joint>
@@ -211,8 +329,8 @@
       <wheel_radius>0.0694</wheel_radius>
       <max_linear_velocity>1.4</max_linear_velocity>
       <max_angular_velocity>0.63</max_angular_velocity>
-      <max_linear_acceleration>0.4</max_linear_acceleration>
-      <max_angular_acceleration>0.4</max_angular_acceleration>
+      <max_linear_acceleration>0.28</max_linear_acceleration>
+      <max_angular_acceleration>0.21</max_angular_acceleration>
       <topic>/cmd_vel</topic>
       <odom_topic>/odom</odom_topic>
       <frame_id>odom</frame_id>

@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<sdf version="1.10">
+  <world name="empty_world">
+
+    <!-- Core simulation systems -->
+    <plugin filename="gz-sim-physics-system"
+            name="gz::sim::systems::Physics"/>
+
+    <plugin filename="gz-sim-user-commands-system"
+            name="gz::sim::systems::UserCommands"/>
+
+    <plugin filename="gz-sim-scene-broadcaster-system"
+            name="gz::sim::systems::SceneBroadcaster"/>
+
+    <!-- This is the key one: runs all <sensor> blocks in models -->
+    <plugin filename="gz-sim-sensors-system"
+            name="gz::sim::systems::Sensors"/>
+
+    <!-- Optional: gives you /clock -->
+    <plugin filename="gz-sim-clock-system"
+            name="gz::sim::systems::Clock"/>
+
+    <!-- Lighting / ground, etc. -->
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Sun</uri>
+    </include>
+
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Ground Plane</uri>
+    </include>
+
+  </world>
+</sdf>

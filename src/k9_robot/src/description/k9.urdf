@@ -13,6 +13,12 @@
   <material name="wheel_grey">
     <color rgba="0.7 0.7 0.7 1.0"/>
   </material>
+  <material name="k9_ear_emissive">
+    <color rgba="0 0 0 1"/>
+  </material>
+  <material name="k9_beam_material">
+    <color rgba="0 1 0 1"/>
+  </material>
   <!-- ===================================================== -->
   <!-- Frames                                                -->
   <!-- ===================================================== -->
@@ -231,8 +237,6 @@
           <max>12.0</max>
         </range>
       </lidar>
-      <always_on>true</always_on>
-      <visualize>true</visualize>
     </sensor>
   </gazebo>
   <link name="eyecam_link">
@@ -259,6 +263,86 @@
     <child link="3dcam_link"/>
     <origin xyz="0.206 0 0.255"/>
   </joint>
+  <!-- ******************** LEFT EAR ****************************** -->
+  <link name="l_ear_link">
+    <!-- Visual (for Gazebo visualisation) -->
+    <visual name="l_ear_visual">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.015 0.02 0.03"/>
+      </geometry>
+      <material name="k9_ear_emissive">
+        <ambient>0 0 0 1</ambient>
+        <diffuse>0 0 0 1</diffuse>
+        <emissive>0 0 0 1</emissive>
+        <!-- will be driven by Gazebo -->
+      </material>
+    </visual>
+    <visual name="l_ear_beam_visual">
+      <origin rpy="0 1.5707963267948966 0" xyz="1.0 0 0"/>
+      <geometry>
+        <cylinder length="2.0" radius="0.01"/>
+      </geometry>
+      <material name="k9_beam_material">
+        <ambient>0 0 0 1</ambient>
+        <diffuse>0 0 0 1</diffuse>
+        <emissive>0 1 0 1</emissive>
+      </material>
+      <transparency>0.6</transparency>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="0.05"/>
+      <inertia ixx="1e-4" ixy="0" ixz="0" iyy="1e-4" iyz="0" izz="1e-4"/>
+    </inertial>
+  </link>
+  <joint name="l_ear_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="l_ear_link"/>
+    <origin rpy="0.0 0.25 0.0" xyz="0.165 0.04 0.74"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="0.1" lower="-0.2" upper="0.6" velocity="10"/>
+    <dynamics damping="0.1" friction="0.1"/>
+  </joint>
+  <!-- ******************** RIGHT EAR ****************************** -->
+  <link name="r_ear_link">
+    <visual name="r_ear_visual">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.015 0.02 0.03"/>
+      </geometry>
+      <material name="k9_ear_emissive">
+        <ambient>0 0 0 1</ambient>
+        <diffuse>0 0 0 1</diffuse>
+        <emissive>0 0 0 1</emissive>
+      </material>
+    </visual>
+    <visual name="r_ear_beam_visual">
+      <origin rpy="0 1.5707963267948966 0" xyz="1.0 0 0"/>
+      <geometry>
+        <cylinder length="2.0" radius="0.01"/>
+      </geometry>
+      <material name="k9_beam_material">
+        <ambient>0 0 0 1</ambient>
+        <diffuse>0 0 0 1</diffuse>
+        <emissive>0 1 0 1</emissive>
+      </material>
+      <transparency>0.6</transparency>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="0.05"/>
+      <inertia ixx="1e-4" ixy="0" ixz="0" iyy="1e-4" iyz="0" izz="1e-4"/>
+    </inertial>
+  </link>
+  <joint name="r_ear_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="r_ear_link"/>
+    <origin rpy="0.0 0.25 0.0" xyz="0.165 -0.04 0.74"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="0.1" lower="-0.6" upper="0.2" velocity="10"/>
+    <dynamics damping="0.1" friction="0.1"/>
+  </joint>
   <!-- ===================================================== -->
   <!-- Gazebo Diff Drive (gz-sim, Jazzy)                     -->
   <!-- ===================================================== -->
@@ -271,8 +355,8 @@
       <max_linear_velocity>1.4</max_linear_velocity>
       <max_angular_velocity>0.63</max_angular_velocity>
       <!-- CHANGED: lower accel also caps braking decel (less "nose dive") -->
-      <max_linear_acceleration>0.4</max_linear_acceleration>
-      <max_angular_acceleration>0.4</max_angular_acceleration>
+      <max_linear_acceleration>0.28</max_linear_acceleration>
+      <max_angular_acceleration>0.21</max_angular_acceleration>
       <topic>/cmd_vel</topic>
       <odom_topic>/odom</odom_topic>
       <frame_id>odom</frame_id>
