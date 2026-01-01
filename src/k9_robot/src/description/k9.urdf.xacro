@@ -536,7 +536,7 @@
   <xacro:k9_add_oakd_pointcloud
     parent_link="base_link"
     oak_link="oakd_link"
-    xyz="0.206 0 0.255"
+    xyz="0.26 0 0.255"
     rpy="0 0 0"
     gz_topic="/oak"
     frame_id="oak_depth_frame"/>

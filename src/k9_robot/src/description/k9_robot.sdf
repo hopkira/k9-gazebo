@@ -3,15 +3,15 @@
   <model name="k9_robot">
     <link name="base_footprint">
       <inertial>
-        <pose>-0.04488296723082464 0 0.2252066258552394 0 0 0</pose>
+        <pose>-0.044785740007202028 0 0.2252066258552394 0 0 0</pose>
         <mass>27.77</mass>
         <inertia>
           <ixx>0.8520626115808434</ixx>
           <ixy>0</ixy>
-          <ixz>-0.033379878465970458</ixz>
-          <iyy>2.5232108812243439</iyy>
+          <ixz>-0.033647700576161343</ixz>
+          <iyy>2.5247111867338869</iyy>
           <iyz>0</iyz>
-          <izz>1.7717592696435001</izz>
+          <izz>1.773259575153042</izz>
         </inertia>
       </inertial>
       <collision name="base_footprint_fixed_joint_lump__base_link_collision">
@@ -185,7 +185,7 @@
             <stddev>0.0030000000000000001</stddev>
           </noise>
         </camera>
-        <pose>0.20599999999999999 0 0.32440000000000002 0 0 0</pose>
+        <pose>0.26000000000000001 0 0.32440000000000002 0 0 0</pose>
       </sensor>
     </link>
     <joint name="drivewhl_l_joint" type="revolute">
@@ -515,7 +515,7 @@
       <pose>0 0 0 0 0 0</pose>
     </frame>
     <frame name="oakd_link_joint" attached_to="base_link">
-      <pose>0.20599999999999999 0 0.255 0 0 0</pose>
+      <pose>0.26000000000000001 0 0.255 0 0 0</pose>
     </frame>
     <frame name="oakd_link" attached_to="oakd_link_joint">
       <pose>0 0 0 0 0 0</pose>

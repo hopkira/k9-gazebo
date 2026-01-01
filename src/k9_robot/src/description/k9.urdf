@@ -446,7 +446,7 @@
   <joint name="oakd_link_joint" type="fixed">
     <parent link="base_link"/>
     <child link="oakd_link"/>
-    <origin rpy="0 0 0" xyz="0.206 0 0.255"/>
+    <origin rpy="0 0 0" xyz="0.26 0 0.255"/>
   </joint>
   <gazebo reference="oakd_link">
     <sensor name="oakd_link_rgbd" type="rgbd_camera">
