@@ -3,15 +3,15 @@
   <model name="k9_robot">
     <link name="base_footprint">
       <inertial>
-        <pose>-0.045368231046931419 0 0.2250245487364621 0 0 0</pose>
-        <mass>27.699999999999999</mass>
+        <pose>-0.045335497835497847 0 0.2250277056277056 0 0 0</pose>
+        <mass>27.719999999999999</mass>
         <inertia>
-          <ixx>0.85155837530685896</ixx>
+          <ixx>0.85155975792207816</ixx>
           <ixy>0</ixy>
-          <ixz>-0.032129370397112111</ixz>
-          <iyy>2.5195127193501801</iyy>
+          <ixz>-0.032133337662337717</ixz>
+          <iyy>2.5195552377922081</iyy>
           <iyz>0</iyz>
-          <izz>1.7685543440433209</izz>
+          <izz>1.768596479870129</izz>
         </inertia>
       </inertial>
       <collision name="base_footprint_fixed_joint_lump__base_link_collision">
@@ -91,6 +91,67 @@
           </range>
         </lidar>
         <pose>-0.112 0 0.59940000000000004 0 0 0</pose>
+      </sensor>
+      <sensor name="imu_link_sensor" type="imu">
+        <topic>/k9/imu</topic>
+        <always_on>true</always_on>
+        <visualize>false</visualize>
+        <update_rate>200</update_rate>
+        <imu>
+          <angular_velocity>
+            <x>
+              <noise type="gaussian">
+                <mean>0</mean>
+                <stddev>0.001</stddev>
+                <bias_mean>0</bias_mean>
+                <bias_stddev>0</bias_stddev>
+              </noise>
+            </x>
+            <y>
+              <noise type="gaussian">
+                <mean>0</mean>
+                <stddev>0.001</stddev>
+                <bias_mean>0</bias_mean>
+                <bias_stddev>0</bias_stddev>
+              </noise>
+            </y>
+            <z>
+              <noise type="gaussian">
+                <mean>0</mean>
+                <stddev>0.001</stddev>
+                <bias_mean>0</bias_mean>
+                <bias_stddev>0</bias_stddev>
+              </noise>
+            </z>
+          </angular_velocity>
+          <linear_acceleration>
+            <x>
+              <noise type="gaussian">
+                <mean>0</mean>
+                <stddev>0.01</stddev>
+                <bias_mean>0</bias_mean>
+                <bias_stddev>0</bias_stddev>
+              </noise>
+            </x>
+            <y>
+              <noise type="gaussian">
+                <mean>0</mean>
+                <stddev>0.01</stddev>
+                <bias_mean>0</bias_mean>
+                <bias_stddev>0</bias_stddev>
+              </noise>
+            </y>
+            <z>
+              <noise type="gaussian">
+                <mean>0</mean>
+                <stddev>0.01</stddev>
+                <bias_mean>0</bias_mean>
+                <bias_stddev>0</bias_stddev>
+              </noise>
+            </z>
+          </linear_acceleration>
+        </imu>
+        <pose>0 0 0.22939999999999999 0 0 0</pose>
       </sensor>
     </link>
     <joint name="drivewhl_l_joint" type="revolute">
@@ -381,6 +442,12 @@
       <pose>0.36599999999999999 0 0.67000000000000004 0 0 0</pose>
     </frame>
     <frame name="eyecam_link" attached_to="eyecam_joint">
+      <pose>0 0 0 0 0 0</pose>
+    </frame>
+    <frame name="imu_link_joint" attached_to="base_link">
+      <pose>0 0 0.16 0 0 0</pose>
+    </frame>
+    <frame name="imu_link" attached_to="imu_link_joint">
       <pose>0 0 0 0 0 0</pose>
     </frame>
     <frame name="motors_joint" attached_to="base_link">

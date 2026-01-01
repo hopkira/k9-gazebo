@@ -2,6 +2,13 @@
 <robot name="k9_robot" xmlns:xacro="http://ros.org/wiki/xacro">
 
   <!-- ===================================================== -->
+  <!-- To generate SDF for Gazebo Sim                        -->
+  <!-- ros2 run xacro xacro k9.urdf.xacro > k9.urdf          -->
+  <!-- gz sdf -p k9.urdf > k9_raw.sdf                        -->
+  <!-- python3 patch_friction.py k9_raw.sdf k9_robot.sdf     -->
+  <!-- ===================================================== -->
+
+  <!-- ===================================================== -->
   <!-- Materials                                             -->
   <!-- ===================================================== -->
   <material name="K9_grey">
@@ -44,6 +51,106 @@
         iyy="1e-4" iyz="0"
         izz="1e-4"/>
     </inertial>
+  </xacro:macro>
+
+  <!-- ===================================================== -->
+  <!-- IMU (Gazebo Sim) helper macro                          -->
+  <!-- ===================================================== -->
+  <xacro:macro name="k9_add_imu" params="
+    parent_link
+    imu_link:=imu_link
+    xyz:='0 0 0'
+    rpy:='0 0 0'
+    update_rate:=200
+    accel_noise:=0.02
+    gyro_noise:=0.002
+    accel_bias:=0.0
+    gyro_bias:=0.0
+  ">
+
+    <!-- A tiny link to carry the IMU sensor -->
+    <link name="${imu_link}">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.02"/>
+        <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+      </inertial>
+    </link>
+
+    <joint name="${imu_link}_joint" type="fixed">
+      <parent link="${parent_link}"/>
+      <child link="${imu_link}"/>
+      <origin xyz="${xyz}" rpy="${rpy}"/>
+    </joint>
+
+    <!-- Gazebo Sim sensor definition -->
+    <gazebo reference="${imu_link}">
+      <sensor name="${imu_link}_sensor" type="imu">
+        <topic>/k9/imu</topic>
+        <always_on>true</always_on>
+        <visualize>false</visualize>
+        <update_rate>${update_rate}</update_rate>
+
+        <!-- Noise model (tune these to feel like your BNO080) -->
+        <imu>
+          <angular_velocity>
+            <x>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>${gyro_noise}</stddev>
+                <bias_mean>${gyro_bias}</bias_mean>
+                <bias_stddev>0.0</bias_stddev>
+              </noise>
+            </x>
+            <y>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>${gyro_noise}</stddev>
+                <bias_mean>${gyro_bias}</bias_mean>
+                <bias_stddev>0.0</bias_stddev>
+              </noise>
+            </y>
+            <z>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>${gyro_noise}</stddev>
+                <bias_mean>${gyro_bias}</bias_mean>
+                <bias_stddev>0.0</bias_stddev>
+              </noise>
+            </z>
+          </angular_velocity>
+
+          <linear_acceleration>
+            <x>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>${accel_noise}</stddev>
+                <bias_mean>${accel_bias}</bias_mean>
+                <bias_stddev>0.0</bias_stddev>
+              </noise>
+            </x>
+            <y>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>${accel_noise}</stddev>
+                <bias_mean>${accel_bias}</bias_mean>
+                <bias_stddev>0.0</bias_stddev>
+              </noise>
+            </y>
+            <z>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>${accel_noise}</stddev>
+                <bias_mean>${accel_bias}</bias_mean>
+                <bias_stddev>0.0</bias_stddev>
+              </noise>
+            </z>
+          </linear_acceleration>
+        </imu>
+
+      </sensor>
+    </gazebo>
+
   </xacro:macro>
 
   <!-- ===================================================== -->
@@ -347,6 +454,13 @@
   <dynamics friction="0.1" damping="0.1"/>
 </joint>
 
+<xacro:k9_add_imu parent_link="base_link"
+                  imu_link="imu_link"
+                  xyz="0 0 0.16"
+                  rpy="0 0 0"
+                  update_rate="200"
+                  accel_noise="0.01"
+                  gyro_noise="0.001"/>
 
   <!-- ===================================================== -->
   <!-- Gazebo Diff Drive (gz-sim, Jazzy)                     -->

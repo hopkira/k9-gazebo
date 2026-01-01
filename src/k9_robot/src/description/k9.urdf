@@ -5,6 +5,12 @@
 <!-- =================================================================================== -->
 <robot name="k9_robot">
   <!-- ===================================================== -->
+  <!-- To generate SDF for Gazebo Sim                        -->
+  <!-- ros2 run xacro xacro k9.urdf.xacro > k9.urdf          -->
+  <!-- gz sdf -p k9.urdf > k9_raw.sdf                        -->
+  <!-- python3 patch_friction.py k9_raw.sdf k9_robot.sdf     -->
+  <!-- ===================================================== -->
+  <!-- ===================================================== -->
   <!-- Materials                                             -->
   <!-- ===================================================== -->
   <material name="K9_grey">
@@ -343,6 +349,83 @@
     <limit effort="0.1" lower="-0.6" upper="0.2" velocity="10"/>
     <dynamics damping="0.1" friction="0.1"/>
   </joint>
+  <!-- A tiny link to carry the IMU sensor -->
+  <link name="imu_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.02"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+    </inertial>
+  </link>
+  <joint name="imu_link_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+    <origin rpy="0 0 0" xyz="0 0 0.16"/>
+  </joint>
+  <!-- Gazebo Sim sensor definition -->
+  <gazebo reference="imu_link">
+    <sensor name="imu_link_sensor" type="imu">
+      <topic>/k9/imu</topic>
+      <always_on>true</always_on>
+      <visualize>false</visualize>
+      <update_rate>200</update_rate>
+      <!-- Noise model (tune these to feel like your BNO080) -->
+      <imu>
+        <angular_velocity>
+          <x>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.001</stddev>
+              <bias_mean>0.0</bias_mean>
+              <bias_stddev>0.0</bias_stddev>
+            </noise>
+          </x>
+          <y>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.001</stddev>
+              <bias_mean>0.0</bias_mean>
+              <bias_stddev>0.0</bias_stddev>
+            </noise>
+          </y>
+          <z>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.001</stddev>
+              <bias_mean>0.0</bias_mean>
+              <bias_stddev>0.0</bias_stddev>
+            </noise>
+          </z>
+        </angular_velocity>
+        <linear_acceleration>
+          <x>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.01</stddev>
+              <bias_mean>0.0</bias_mean>
+              <bias_stddev>0.0</bias_stddev>
+            </noise>
+          </x>
+          <y>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.01</stddev>
+              <bias_mean>0.0</bias_mean>
+              <bias_stddev>0.0</bias_stddev>
+            </noise>
+          </y>
+          <z>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.01</stddev>
+              <bias_mean>0.0</bias_mean>
+              <bias_stddev>0.0</bias_stddev>
+            </noise>
+          </z>
+        </linear_acceleration>
+      </imu>
+    </sensor>
+  </gazebo>
   <!-- ===================================================== -->
   <!-- Gazebo Diff Drive (gz-sim, Jazzy)                     -->
   <!-- ===================================================== -->
