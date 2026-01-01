@@ -3,15 +3,15 @@
   <model name="k9_robot">
     <link name="base_footprint">
       <inertial>
-        <pose>-0.045335497835497847 0 0.2250277056277056 0 0 0</pose>
-        <mass>27.719999999999999</mass>
+        <pose>-0.04488296723082464 0 0.2252066258552394 0 0 0</pose>
+        <mass>27.77</mass>
         <inertia>
-          <ixx>0.85155975792207816</ixx>
+          <ixx>0.8520626115808434</ixx>
           <ixy>0</ixy>
-          <ixz>-0.032133337662337717</ixz>
-          <iyy>2.5195552377922081</iyy>
+          <ixz>-0.033379878465970458</ixz>
+          <iyy>2.5232108812243439</iyy>
           <iyz>0</iyz>
-          <izz>1.768596479870129</izz>
+          <izz>1.7717592696435001</izz>
         </inertia>
       </inertial>
       <collision name="base_footprint_fixed_joint_lump__base_link_collision">
@@ -29,6 +29,17 @@
             <radius>0.040000000000000001</radius>
           </sphere>
         </geometry>
+        <surface>
+          <contact>
+            <ode />
+          </contact>
+          <friction>
+            <ode>
+              <mu>0.20000000000000001</mu>
+              <mu2>0.20000000000000001</mu2>
+            </ode>
+          </friction>
+        </surface>
       </collision>
       <collision name="base_footprint_fixed_joint_lump__battery_link_collision_2">
         <pose>0 0 0.24940000000000001 0 0 0</pose>
@@ -74,7 +85,7 @@
       <sensor name="ld06_lidar" type="gpu_lidar">
         <update_rate>10</update_rate>
         <always_on>true</always_on>
-        <topic>/world/empty/model/k9_robot/ld06/scan</topic>
+        <topic>/ld06/scan</topic>
         <visualize>true</visualize>
         <lidar>
           <scan>
@@ -153,6 +164,29 @@
         </imu>
         <pose>0 0 0.22939999999999999 0 0 0</pose>
       </sensor>
+      <sensor name="oakd_link_rgbd" type="rgbd_camera">
+        <always_on>true</always_on>
+        <visualize>false</visualize>
+        <update_rate>30</update_rate>
+        <topic>/oak</topic>
+        <camera>
+          <horizontal_fov>1.3962634</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>400</height>
+          </image>
+          <clip>
+            <near>0.20000000000000001</near>
+            <far>8</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0</mean>
+            <stddev>0.0030000000000000001</stddev>
+          </noise>
+        </camera>
+        <pose>0.20599999999999999 0 0.32440000000000002 0 0 0</pose>
+      </sensor>
     </link>
     <joint name="drivewhl_l_joint" type="revolute">
       <pose relative_to="base_footprint">0 0.1011 0.069400000000000003 0 0 0</pose>
@@ -195,6 +229,9 @@
           </cylinder>
         </geometry>
         <surface>
+          <contact>
+            <ode />
+          </contact>
           <friction>
             <ode>
               <mu>1.1</mu>
@@ -258,6 +295,9 @@
           </cylinder>
         </geometry>
         <surface>
+          <contact>
+            <ode />
+          </contact>
           <friction>
             <ode>
               <mu>1.1</mu>
@@ -326,19 +366,28 @@
           <ambient>0 0 0 1</ambient>
         </material>
       </visual>
-      <visual name="l_ear_link_fixed_joint_lump__l_ear_beam_visual_visual_1">
-        <pose>1 0 0 0 1.5707963267948966 0</pose>
-        <geometry>
-          <cylinder>
-            <length>2</length>
-            <radius>0.01</radius>
-          </cylinder>
-        </geometry>
-        <material>
-          <diffuse>0 1 0 1</diffuse>
-          <ambient>0 1 0 1</ambient>
-        </material>
-      </visual>
+      <sensor name="l_ear_tof" type="gpu_lidar">
+        <pose>0.0074999999999999997 0 0 0 0 0</pose>
+        <update_rate>30</update_rate>
+        <always_on>true</always_on>
+        <visualize>true</visualize>
+        <topic>/l_ear/scan</topic>
+        <lidar>
+          <scan>
+            <horizontal>
+              <samples>1</samples>
+              <resolution>1</resolution>
+              <min_angle>0</min_angle>
+              <max_angle>0</max_angle>
+            </horizontal>
+          </scan>
+          <range>
+            <min>0.02</min>
+            <max>2</max>
+            <resolution>0.001</resolution>
+          </range>
+        </lidar>
+      </sensor>
     </link>
     <joint name="r_ear_joint" type="revolute">
       <pose relative_to="base_footprint">0.16500000000000001 -0.040000000000000001 0.80940000000000001 0 0.25000000000000017 0</pose>
@@ -386,19 +435,28 @@
           <ambient>0 0 0 1</ambient>
         </material>
       </visual>
-      <visual name="r_ear_link_fixed_joint_lump__r_ear_beam_visual_visual_1">
-        <pose>1 0 0 0 1.5707963267948966 0</pose>
-        <geometry>
-          <cylinder>
-            <length>2</length>
-            <radius>0.01</radius>
-          </cylinder>
-        </geometry>
-        <material>
-          <diffuse>0 1 0 1</diffuse>
-          <ambient>0 1 0 1</ambient>
-        </material>
-      </visual>
+      <sensor name="r_ear_tof" type="gpu_lidar">
+        <pose>0.0074999999999999997 0 0 0 0 0</pose>
+        <update_rate>30</update_rate>
+        <always_on>true</always_on>
+        <visualize>true</visualize>
+        <topic>/r_ear/scan</topic>
+        <lidar>
+          <scan>
+            <horizontal>
+              <samples>1</samples>
+              <resolution>1</resolution>
+              <min_angle>0</min_angle>
+              <max_angle>0</max_angle>
+            </horizontal>
+          </scan>
+          <range>
+            <min>0.02</min>
+            <max>2</max>
+            <resolution>0.001</resolution>
+          </range>
+        </lidar>
+      </sensor>
     </link>
     <plugin name="gz::sim::systems::DiffDrive" filename="gz-sim-diff-drive-system">
       <left_joint>drivewhl_l_joint</left_joint>
@@ -454,6 +512,12 @@
       <pose>0 0 0.10000000000000001 0 0 0</pose>
     </frame>
     <frame name="motors_link" attached_to="motors_joint">
+      <pose>0 0 0 0 0 0</pose>
+    </frame>
+    <frame name="oakd_link_joint" attached_to="base_link">
+      <pose>0.20599999999999999 0 0.255 0 0 0</pose>
+    </frame>
+    <frame name="oakd_link" attached_to="oakd_link_joint">
       <pose>0 0 0 0 0 0</pose>
     </frame>
     <frame name="base_joint" attached_to="base_footprint">

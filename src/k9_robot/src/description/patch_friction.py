@@ -17,10 +17,10 @@ from typing import Dict, Tuple, Optional
 
 
 # Friction values: (mu, mu2)
-FRICTION_MAP: Dict[str, Tuple[float, float]] = {
+FRICTION_MAP = {
     "drivewhl_l_link": (1.1, 0.9),
     "drivewhl_r_link": (1.1, 0.9),
-    "caster_wheel_link": (0.3, 0.15),
+    "ball_caster_link": (0.2, 0.2),
 }
 
 TARGET_MODEL_NAME: Optional[str] = "k9_robot"  # set to None to patch all models
@@ -49,12 +49,11 @@ def find_collision(link: ET.Element) -> Optional[ET.Element]:
     return find_first(link, "collision")
 
 
-def remove_link_level_surfaces(link: ET.Element) -> int:
-    """Remove invalid <surface> elements directly under <link>."""
+def remove_collision_level_surfaces(collision: ET.Element) -> int:
     removed = 0
-    for child in list(link):
+    for child in list(collision):
         if child.tag == "surface":
-            link.remove(child)
+            collision.remove(child)
             removed += 1
     return removed
 
@@ -97,13 +96,13 @@ def main() -> int:
         print("[ERROR] Root element is not <sdf>", file=sys.stderr)
         return 1
 
-    # Collect models (either direct or inside <world>)
+    # Collect models (direct children or inside <world>)
     models = root.findall("model")
     for world in root.findall("world"):
         models.extend(world.findall("model"))
 
     patched_links = 0
-    removed_surfaces = 0
+    patched_collisions = 0
 
     for model in models:
         model_name = model.get("name")
@@ -115,23 +114,26 @@ def main() -> int:
             if link is None:
                 continue
 
-            # 1) Remove invalid link-level <surface>
-            removed_surfaces += remove_link_level_surfaces(link)
-
-            # 2) Ensure collision-level friction
-            collision = find_collision(link)
-            if collision is None:
-                print(f"[WARN] No collision found for link '{link_name}'", file=sys.stderr)
+            collisions = link.findall("collision")
+            if not collisions:
+                print(
+                    f"[WARN] No collisions found for link '{link_name}'",
+                    file=sys.stderr,
+                )
                 continue
 
-            ensure_friction(collision, mu, mu2)
+            for collision in collisions:
+                ensure_friction(collision, mu, mu2)
+                patched_collisions += 1
+
             patched_links += 1
 
     ET.indent(tree, space="  ", level=0)
     tree.write(outfile, encoding="utf-8", xml_declaration=True)
 
     print(
-        f"[OK] Patched {patched_links} link(s), removed {removed_surfaces} invalid <surface> tag(s).",
+        f"[OK] Patched {patched_links} link(s), "
+        f"{patched_collisions} collision(s).",
         file=sys.stderr,
     )
     print(f"[OK] Wrote cleaned SDF: {outfile}", file=sys.stderr)

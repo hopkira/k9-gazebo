@@ -154,6 +154,66 @@
   </xacro:macro>
 
   <!-- ===================================================== -->
+  <!-- OAK-D Lite-ish RGBD -> PointCloud (Gazebo Sim)         -->
+  <!-- ===================================================== -->
+  <xacro:macro name="k9_add_oakd_pointcloud" params="
+    parent_link
+    oak_link:=oakd_link
+    xyz:='0 0 0'
+    rpy:='0 0 0'
+    width:=640
+    height:=400
+    update_rate:=30
+    hfov:=1.3962634
+    near:=0.20
+    far:=8.0
+    depth_noise_stddev:=0.01
+    gz_topic:='/oak'
+    frame_id:='oak_depth_frame'">
+
+    <!-- A tiny link to carry the camera sensor -->
+    <link name="${oak_link}">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.05"/>
+        <inertia ixx="1e-5" ixy="0" ixz="0" iyy="1e-5" iyz="0" izz="1e-5"/>
+      </inertial>
+    </link>
+
+    <joint name="${oak_link}_joint" type="fixed">
+      <parent link="${parent_link}"/>
+      <child link="${oak_link}"/>
+      <origin xyz="${xyz}" rpy="${rpy}"/>
+    </joint>
+
+    <gazebo reference="${oak_link}">
+      <sensor name="${oak_link}_rgbd" type="rgbd_camera">
+        <always_on>true</always_on>
+        <visualize>false</visualize>
+        <update_rate>${update_rate}</update_rate>
+        <topic>${gz_topic}</topic>
+        <camera>
+          <horizontal_fov>${hfov}</horizontal_fov>
+          <image>
+            <width>${width}</width>
+            <height>${height}</height>
+          </image>
+          <clip>
+            <near>${near}</near>
+            <far>${far}</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.003</stddev>
+          </noise>
+        </camera>
+      </sensor>
+    </gazebo>
+
+  </xacro:macro>
+
+  <!-- ===================================================== -->
   <!-- Frames                                                -->
   <!-- ===================================================== -->
   <link name="base_footprint"/>
@@ -362,151 +422,125 @@
 
   <!-- ******************** LEFT EAR ****************************** -->
 
-<link name="l_ear_link">
+  <link name="l_ear_link">
+    <!-- Visual (for Gazebo visualisation) -->
+    <visual name="l_ear_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.015 0.02 0.03"/>
+      </geometry>
+      <material name="k9_ear_emissive">
+        <ambient>0 0 0 1</ambient>
+        <diffuse>0 0 0 1</diffuse>
+        <emissive>0 0 0 1</emissive> <!-- will be driven by Gazebo -->
+      </material>
+    </visual>
+    <xacro:tiny_inertial m="0.05"/>
+  </link>
 
-  <!-- Visual (for Gazebo visualisation) -->
-  <visual name="l_ear_visual">
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-    <geometry>
-      <box size="0.015 0.02 0.03"/>
-    </geometry>
-    <material name="k9_ear_emissive">
-      <ambient>0 0 0 1</ambient>
-      <diffuse>0 0 0 1</diffuse>
-      <emissive>0 0 0 1</emissive> <!-- will be driven by Gazebo -->
-    </material>
-  </visual>
+  <gazebo reference="l_ear_link">
+    <sensor name="l_ear_tof" type="gpu_lidar">
+      <pose>0.0075 0 0 0 0 0</pose>
+      <update_rate>30</update_rate>
+      <always_on>true</always_on>
+      <visualize>true</visualize>
+      <topic>/l_ear/scan</topic>
+      <lidar>
+        <scan>
+          <horizontal>
+            <samples>1</samples>
+            <resolution>1</resolution>
+            <min_angle>0</min_angle>
+            <max_angle>0</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.02</min>
+          <max>2.0</max>
+          <resolution>0.001</resolution>
+        </range>
+      </lidar>
+    </sensor>
+  </gazebo>
 
-  <visual name="l_ear_beam_visual">
-    <origin xyz="1.0075 0 0" rpy="0 ${pi/2} 0"/>
-    <geometry>
-      <cylinder radius="0.01" length="2.0"/>
-    </geometry>
-    <material name="k9_beam_material">
-      <ambient>0 0 0 1</ambient>
-      <diffuse>0 0 0 1</diffuse>
-      <emissive>0 1 0 1</emissive>
-    </material>
-    <transparency>0.6</transparency>
-  </visual>
+  <joint name="l_ear_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="l_ear_link"/>
+    <origin xyz="0.165 0.04 0.74" rpy="0.0 0.25 0.0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.2" upper="0.6" effort="0.1" velocity="10"/>
+    <dynamics friction="0.1" damping="0.1"/>
+  </joint>
 
-  <!-- Inertia -->
-  <xacro:tiny_inertial m="0.05"/>
+  <!-- ******************** RIGHT EAR ****************************** -->
 
-</link>
+  <link name="r_ear_link">
 
-<gazebo reference="l_ear_link">
-  <sensor name="l_ear_tof" type="ray">
-    <pose>0.0075 0 0 0 0 0</pose>
-    <update_rate>30</update_rate>
-    <always_on>true</always_on>
-    <visualize>true</visualize>
-    <topic>/l_ear/scan</topic>
-    <ray>
-      <scan>
-        <horizontal>
-          <samples>1</samples>
-          <resolution>1</resolution>
-          <min_angle>0</min_angle>
-          <max_angle>0</max_angle>
-        </horizontal>
-      </scan>
-      <range>
-        <min>0.02</min>
-        <max>2.0</max>
-        <resolution>0.001</resolution>
-      </range>
-    </ray>
-  </sensor>
-</gazebo>
+    <visual name="r_ear_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.015 0.02 0.03"/>
+      </geometry>
+      <material name="k9_ear_emissive">
+        <ambient>0 0 0 1</ambient>
+        <diffuse>0 0 0 1</diffuse>
+        <emissive>0 0 0 1</emissive>
+      </material>
+    </visual>
+    <xacro:tiny_inertial m="0.05"/>
+  </link>
 
-<joint name="l_ear_joint" type="revolute">
-  <parent link="base_link"/>
-  <child link="l_ear_link"/>
-  <origin xyz="0.165 0.04 0.74" rpy="0.0 0.25 0.0"/>
-  <axis xyz="0 0 1"/>
-  <limit lower="-0.2" upper="0.6" effort="0.1" velocity="10"/>
-  <dynamics friction="0.1" damping="0.1"/>
-</joint>
+  <gazebo reference="r_ear_link">
+    <sensor name="r_ear_tof" type="gpu_lidar">
+      <pose>0.0075 0 0 0 0 0</pose>
+      <update_rate>30</update_rate>
+      <always_on>true</always_on>
+      <visualize>true</visualize>
+      <topic>/r_ear/scan</topic>
+      <lidar>
+        <scan>
+          <horizontal>
+            <samples>1</samples>
+            <resolution>1</resolution>
+            <min_angle>0</min_angle>
+            <max_angle>0</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.02</min>
+          <max>2.0</max>
+          <resolution>0.001</resolution>
+        </range>
+      </lidar>
+    </sensor>
+  </gazebo>
 
+  <joint name="r_ear_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="r_ear_link"/>
+    <origin xyz="0.165 -0.04 0.74" rpy="0.0 0.25 0.0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.6" upper="0.2" effort="0.1" velocity="10"/>
+    <dynamics friction="0.1" damping="0.1"/>
+  </joint>
 
-<!-- ******************** RIGHT EAR ****************************** -->
+  <xacro:k9_add_imu 
+    parent_link="base_link"
+    imu_link="imu_link"
+    xyz="0 0 0.16"
+    rpy="0 0 0"
+    update_rate="200"
+    accel_noise="0.01"
+    gyro_noise="0.001"/>
 
-<link name="r_ear_link">
+  <xacro:k9_add_oakd_pointcloud
+    parent_link="base_link"
+    oak_link="oakd_link"
+    xyz="0.206 0 0.255"
+    rpy="0 0 0"
+    gz_topic="/oak"
+    frame_id="oak_depth_frame"/>
 
-  <visual name="r_ear_visual">
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-    <geometry>
-      <box size="0.015 0.02 0.03"/>
-    </geometry>
-    <material name="k9_ear_emissive">
-      <ambient>0 0 0 1</ambient>
-      <diffuse>0 0 0 1</diffuse>
-      <emissive>0 0 0 1</emissive>
-    </material>
-  </visual>
-
-  <visual name="r_ear_beam_visual">
-    <origin xyz="1.0075 0 0" rpy="0 ${pi/2} 0"/>
-    <geometry>
-      <cylinder radius="0.01" length="2.0"/>
-    </geometry>
-    <material name="k9_beam_material">
-      <ambient>0 0 0 1</ambient>
-      <diffuse>0 0 0 1</diffuse>
-      <emissive>0 1 0 1</emissive>
-    </material>
-    <transparency>0.6</transparency>
-  </visual>
-
-  <xacro:tiny_inertial m="0.05"/>
-</link>
-
-<gazebo reference="r_ear_link">
-  <sensor name="r_ear_tof" type="ray">
-    <pose>0.0075 0 0 0 0 0</pose>
-    <update_rate>30</update_rate>
-    <always_on>true</always_on>
-    <visualize>true</visualize>
-    <topic>/r_ear/scan</topic>
-    <ray>
-      <scan>
-        <horizontal>
-          <samples>1</samples>
-          <resolution>1</resolution>
-          <min_angle>0</min_angle>
-          <max_angle>0</max_angle>
-        </horizontal>
-      </scan>
-      <range>
-        <min>0.02</min>
-        <max>2.0</max>
-        <resolution>0.001</resolution>
-      </range>
-    </ray>
-  </sensor>
-</gazebo>
-
-<joint name="r_ear_joint" type="revolute">
-  <parent link="base_link"/>
-  <child link="r_ear_link"/>
-  <origin xyz="0.165 -0.04 0.74" rpy="0.0 0.25 0.0"/>
-  <axis xyz="0 0 1"/>
-  <limit lower="-0.6" upper="0.2" effort="0.1" velocity="10"/>
-  <dynamics friction="0.1" damping="0.1"/>
-</joint>
-
-<<<<<<< Updated upstream
-<xacro:k9_add_imu parent_link="base_link"
-                  imu_link="imu_link"
-                  xyz="0 0 0.16"
-                  rpy="0 0 0"
-                  update_rate="200"
-                  accel_noise="0.01"
-                  gyro_noise="0.001"/>
-
-=======
->>>>>>> Stashed changes
   <!-- ===================================================== -->
   <!-- Gazebo Diff Drive (gz-sim, Jazzy)                     -->
   <!-- ===================================================== -->

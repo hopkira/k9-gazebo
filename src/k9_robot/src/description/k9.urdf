@@ -115,21 +115,16 @@
       <geometry>
         <cylinder length="0.025" radius="0.0694"/>
       </geometry>
-      <!-- NEW: slightly reduced friction to reduce "trip" under hard braking -->
-      <surface>
-        <friction>
-          <ode>
-            <mu>0.9</mu>
-            <mu2>0.7</mu2>
-          </ode>
-        </friction>
-      </surface>
     </collision>
     <inertial>
       <mass value="1.0"/>
       <inertia ixx="0.002" ixy="0" ixz="0" iyy="0.002" iyz="0" izz="0.004"/>
     </inertial>
   </link>
+  <gazebo reference="drivewhl_l_link">
+    <mu1>0.9</mu1>
+    <mu2>0.7</mu2>
+  </gazebo>
   <joint name="drivewhl_l_joint" type="continuous">
     <parent link="base_link"/>
     <child link="drivewhl_l_link"/>
@@ -150,21 +145,16 @@
       <geometry>
         <cylinder length="0.025" radius="0.0694"/>
       </geometry>
-      <!-- NEW: slightly reduced friction to reduce "trip" under hard braking -->
-      <surface>
-        <friction>
-          <ode>
-            <mu>0.9</mu>
-            <mu2>0.7</mu2>
-          </ode>
-        </friction>
-      </surface>
     </collision>
     <inertial>
       <mass value="1.0"/>
       <inertia ixx="0.002" ixy="0" ixz="0" iyy="0.002" iyz="0" izz="0.004"/>
     </inertial>
   </link>
+  <gazebo reference="drivewhl_r_link">
+    <mu1>0.9</mu1>
+    <mu2>0.7</mu2>
+  </gazebo>
   <joint name="drivewhl_r_joint" type="continuous">
     <parent link="base_link"/>
     <child link="drivewhl_r_link"/>
@@ -186,15 +176,6 @@
       <geometry>
         <sphere radius="0.04"/>
       </geometry>
-      <!-- NEW: low friction so it supports but doesn't brake/steer the robot -->
-      <surface>
-        <friction>
-          <ode>
-            <mu>0.2</mu>
-            <mu2>0.2</mu2>
-          </ode>
-        </friction>
-      </surface>
     </collision>
     <inertial>
       <origin xyz="0 0 0"/>
@@ -202,6 +183,10 @@
       <inertia ixx="1e-4" ixy="0" ixz="0" iyy="1e-4" iyz="0" izz="1e-4"/>
     </inertial>
   </link>
+  <gazebo reference="ball_caster_link">
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+  </gazebo>
   <joint name="ball_caster_joint" type="fixed">
     <parent link="base_link"/>
     <child link="ball_caster_link"/>
@@ -227,7 +212,7 @@
     <sensor name="ld06_lidar" type="gpu_lidar">
       <update_rate>10</update_rate>
       <always_on>true</always_on>
-      <topic>/world/empty/model/k9_robot/ld06/scan</topic>
+      <topic>/ld06/scan</topic>
       <pose>0 0 0 0 0 0</pose>
       <visualize>true</visualize>
       <lidar>
@@ -284,24 +269,36 @@
         <!-- will be driven by Gazebo -->
       </material>
     </visual>
-    <visual name="l_ear_beam_visual">
-      <origin rpy="0 1.5707963267948966 0" xyz="1.0 0 0"/>
-      <geometry>
-        <cylinder length="2.0" radius="0.01"/>
-      </geometry>
-      <material name="k9_beam_material">
-        <ambient>0 0 0 1</ambient>
-        <diffuse>0 0 0 1</diffuse>
-        <emissive>0 1 0 1</emissive>
-      </material>
-      <transparency>0.6</transparency>
-    </visual>
     <inertial>
       <origin xyz="0 0 0"/>
       <mass value="0.05"/>
       <inertia ixx="1e-4" ixy="0" ixz="0" iyy="1e-4" iyz="0" izz="1e-4"/>
     </inertial>
   </link>
+  <gazebo reference="l_ear_link">
+    <sensor name="l_ear_tof" type="gpu_lidar">
+      <pose>0.0075 0 0 0 0 0</pose>
+      <update_rate>30</update_rate>
+      <always_on>true</always_on>
+      <visualize>true</visualize>
+      <topic>/l_ear/scan</topic>
+      <lidar>
+        <scan>
+          <horizontal>
+            <samples>1</samples>
+            <resolution>1</resolution>
+            <min_angle>0</min_angle>
+            <max_angle>0</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.02</min>
+          <max>2.0</max>
+          <resolution>0.001</resolution>
+        </range>
+      </lidar>
+    </sensor>
+  </gazebo>
   <joint name="l_ear_joint" type="revolute">
     <parent link="base_link"/>
     <child link="l_ear_link"/>
@@ -323,24 +320,36 @@
         <emissive>0 0 0 1</emissive>
       </material>
     </visual>
-    <visual name="r_ear_beam_visual">
-      <origin rpy="0 1.5707963267948966 0" xyz="1.0 0 0"/>
-      <geometry>
-        <cylinder length="2.0" radius="0.01"/>
-      </geometry>
-      <material name="k9_beam_material">
-        <ambient>0 0 0 1</ambient>
-        <diffuse>0 0 0 1</diffuse>
-        <emissive>0 1 0 1</emissive>
-      </material>
-      <transparency>0.6</transparency>
-    </visual>
     <inertial>
       <origin xyz="0 0 0"/>
       <mass value="0.05"/>
       <inertia ixx="1e-4" ixy="0" ixz="0" iyy="1e-4" iyz="0" izz="1e-4"/>
     </inertial>
   </link>
+  <gazebo reference="r_ear_link">
+    <sensor name="r_ear_tof" type="gpu_lidar">
+      <pose>0.0075 0 0 0 0 0</pose>
+      <update_rate>30</update_rate>
+      <always_on>true</always_on>
+      <visualize>true</visualize>
+      <topic>/r_ear/scan</topic>
+      <lidar>
+        <scan>
+          <horizontal>
+            <samples>1</samples>
+            <resolution>1</resolution>
+            <min_angle>0</min_angle>
+            <max_angle>0</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.02</min>
+          <max>2.0</max>
+          <resolution>0.001</resolution>
+        </range>
+      </lidar>
+    </sensor>
+  </gazebo>
   <joint name="r_ear_joint" type="revolute">
     <parent link="base_link"/>
     <child link="r_ear_link"/>
@@ -424,6 +433,43 @@
           </z>
         </linear_acceleration>
       </imu>
+    </sensor>
+  </gazebo>
+  <!-- A tiny link to carry the camera sensor -->
+  <link name="oakd_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.05"/>
+      <inertia ixx="1e-5" ixy="0" ixz="0" iyy="1e-5" iyz="0" izz="1e-5"/>
+    </inertial>
+  </link>
+  <joint name="oakd_link_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="oakd_link"/>
+    <origin rpy="0 0 0" xyz="0.206 0 0.255"/>
+  </joint>
+  <gazebo reference="oakd_link">
+    <sensor name="oakd_link_rgbd" type="rgbd_camera">
+      <always_on>true</always_on>
+      <visualize>false</visualize>
+      <update_rate>30</update_rate>
+      <topic>/oak</topic>
+      <camera>
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>400</height>
+        </image>
+        <clip>
+          <near>0.2</near>
+          <far>8.0</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.003</stddev>
+        </noise>
+      </camera>
     </sensor>
   </gazebo>
   <!-- ===================================================== -->
