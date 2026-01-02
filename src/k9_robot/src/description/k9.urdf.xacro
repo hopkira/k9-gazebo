@@ -524,6 +524,32 @@
     <dynamics friction="0.1" damping="0.1"/>
   </joint>
 
+  <!-- ===================================================== -->
+  <!-- Ear Joint Movement (gz-sim, Jazzy)                    -->
+  <!-- ===================================================== -->
+
+  <ros2_control name="K9EarsSystem" type="system">
+    <hardware>
+      <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+    </hardware>
+
+    <joint name="l_ear_joint">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+
+    <joint name="r_ear_joint">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+  </ros2_control>
+
+  <!-- ===================================================== -->
+  <!-- IMU (gz-sim, Jazzy)                                   -->
+  <!-- ===================================================== -->
+
   <xacro:k9_add_imu 
     parent_link="base_link"
     imu_link="imu_link"
@@ -566,6 +592,13 @@
       <frame_id>odom</frame_id>
       <child_frame_id>base_footprint</child_frame_id>
     </plugin>
-  </gazebo>
+  </gazebo><gazebo>
+
+
+  <plugin name="gz_ros2_control" filename="libgz_ros2_control-system.so">
+    <!-- Path inside your package is better than an absolute path -->
+    <parameters>/home/hopkira/Documents/GitHub/k9-gazebo/src/k9_robot/src/description/ears_controllers.yaml</parameters>
+  </plugin>
+</gazebo>
 
 </robot>
