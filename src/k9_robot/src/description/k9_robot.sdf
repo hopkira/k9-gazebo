@@ -472,6 +472,9 @@
       <frame_id>odom</frame_id>
       <child_frame_id>base_footprint</child_frame_id>
     </plugin>
+    <plugin name="gz_ros2_control" filename="libgz_ros2_control-system.so">
+      <parameters>/home/hopkira/Documents/GitHub/k9-gazebo/src/k9_robot/src/description/ears_controllers.yaml</parameters>
+    </plugin>
     <frame name="3dcam_joint" attached_to="base_link">
       <pose>0.20599999999999999 0 0.255 0 0 0</pose>
     </frame>
