@@ -514,9 +514,8 @@
     </plugin>
   </gazebo>
   <gazebo>
-    <plugin filename="libgz_ros2_control-system.so" name="gz_ros2_control">
-      <!-- Path inside your package is better than an absolute path -->
-      <parameters>/home/hopkira/Documents/GitHub/k9-gazebo/src/k9_robot/src/description/ears_controllers.yaml</parameters>
+    <plugin filename="/opt/ros/jazzy/lib/libgz_ros2_control-system.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+      <parameters>/home/hopkira/Documents/GitHub/k9-gazebo/src/k9_robot/src/description/ear_controllers.yaml</parameters>
     </plugin>
   </gazebo>
 </robot>
