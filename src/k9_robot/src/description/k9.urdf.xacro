@@ -169,7 +169,7 @@
     far:=8.0
     depth_noise_stddev:=0.01
     gz_topic:='/oak'
-    frame_id:='oak_depth_frame'">
+    frame_id:='oakd_link'">
 
     <!-- A tiny link to carry the camera sensor -->
     <link name="${oak_link}">
@@ -466,10 +466,10 @@
   <joint name="l_ear_joint" type="revolute">
     <parent link="base_link"/>
     <child link="l_ear_link"/>
-    <origin xyz="0.165 0.04 0.74" rpy="0.0 0.25 0.0"/>
+    <origin xyz="0.27 0.0425 0.67" rpy="0.0 0.25 0.0"/>
     <axis xyz="0 0 1"/>
-    <limit lower="-0.2" upper="0.6" effort="0.1" velocity="10"/>
-    <dynamics friction="0.1" damping="0.1"/>
+    <limit lower="-0.2" upper="0.6" effort="2.0" velocity="10"/>
+    <dynamics friction="0.01" damping="0.01"/>
   </joint>
 
   <!-- ******************** RIGHT EAR ****************************** -->
@@ -518,10 +518,10 @@
   <joint name="r_ear_joint" type="revolute">
     <parent link="base_link"/>
     <child link="r_ear_link"/>
-    <origin xyz="0.165 -0.04 0.74" rpy="0.0 0.25 0.0"/>
+    <origin xyz="0.27 -0.0425 0.67" rpy="0.0 0.25 0.0"/>
     <axis xyz="0 0 1"/>
-    <limit lower="-0.6" upper="0.2" effort="0.1" velocity="10"/>
-    <dynamics friction="0.1" damping="0.1"/>
+    <limit lower="-0.6" upper="0.2" effort="2.0" velocity="10"/>
+    <dynamics friction="0.01" damping="0.01"/>
   </joint>
 
   <!-- ===================================================== -->

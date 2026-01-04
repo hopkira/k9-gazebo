@@ -14,3 +14,7 @@ ears_position_controller:
       - l_ear_joint
       - r_ear_joint
     interface_name: position
+
+hardware:
+  ros__parameters:
+    position_proportional_gain: 5.0

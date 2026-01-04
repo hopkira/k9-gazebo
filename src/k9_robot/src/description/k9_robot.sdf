@@ -321,7 +321,7 @@
       </visual>
     </link>
     <joint name="l_ear_joint" type="revolute">
-      <pose relative_to="base_footprint">0.16500000000000001 0.040000000000000001 0.80940000000000001 0 0.25000000000000017 0</pose>
+      <pose relative_to="base_footprint">0.27000000000000002 0.042500000000000003 0.73940000000000006 0 0.25000000000000017 0</pose>
       <parent>base_footprint</parent>
       <child>l_ear_link</child>
       <axis>
@@ -329,12 +329,12 @@
         <limit>
           <lower>-0.20000000000000001</lower>
           <upper>0.59999999999999998</upper>
-          <effort>0.10000000000000001</effort>
+          <effort>2</effort>
           <velocity>10</velocity>
         </limit>
         <dynamics>
-          <damping>0.10000000000000001</damping>
-          <friction>0.10000000000000001</friction>
+          <damping>0.01</damping>
+          <friction>0.01</friction>
           <spring_reference>0</spring_reference>
           <spring_stiffness>0</spring_stiffness>
         </dynamics>
@@ -390,7 +390,7 @@
       </sensor>
     </link>
     <joint name="r_ear_joint" type="revolute">
-      <pose relative_to="base_footprint">0.16500000000000001 -0.040000000000000001 0.80940000000000001 0 0.25000000000000017 0</pose>
+      <pose relative_to="base_footprint">0.27000000000000002 -0.042500000000000003 0.73940000000000006 0 0.25000000000000017 0</pose>
       <parent>base_footprint</parent>
       <child>r_ear_link</child>
       <axis>
@@ -398,12 +398,12 @@
         <limit>
           <lower>-0.59999999999999998</lower>
           <upper>0.20000000000000001</upper>
-          <effort>0.10000000000000001</effort>
+          <effort>2</effort>
           <velocity>10</velocity>
         </limit>
         <dynamics>
-          <damping>0.10000000000000001</damping>
-          <friction>0.10000000000000001</friction>
+          <damping>0.01</damping>
+          <friction>0.01</friction>
           <spring_reference>0</spring_reference>
           <spring_stiffness>0</spring_stiffness>
         </dynamics>

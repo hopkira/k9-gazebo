@@ -302,10 +302,10 @@
   <joint name="l_ear_joint" type="revolute">
     <parent link="base_link"/>
     <child link="l_ear_link"/>
-    <origin rpy="0.0 0.25 0.0" xyz="0.165 0.04 0.74"/>
+    <origin rpy="0.0 0.25 0.0" xyz="0.27 0.0425 0.67"/>
     <axis xyz="0 0 1"/>
-    <limit effort="0.1" lower="-0.2" upper="0.6" velocity="10"/>
-    <dynamics damping="0.1" friction="0.1"/>
+    <limit effort="2.0" lower="-0.2" upper="0.6" velocity="10"/>
+    <dynamics damping="0.01" friction="0.01"/>
   </joint>
   <!-- ******************** RIGHT EAR ****************************** -->
   <link name="r_ear_link">
@@ -353,10 +353,10 @@
   <joint name="r_ear_joint" type="revolute">
     <parent link="base_link"/>
     <child link="r_ear_link"/>
-    <origin rpy="0.0 0.25 0.0" xyz="0.165 -0.04 0.74"/>
+    <origin rpy="0.0 0.25 0.0" xyz="0.27 -0.0425 0.67"/>
     <axis xyz="0 0 1"/>
-    <limit effort="0.1" lower="-0.6" upper="0.2" velocity="10"/>
-    <dynamics damping="0.1" friction="0.1"/>
+    <limit effort="2.0" lower="-0.6" upper="0.2" velocity="10"/>
+    <dynamics damping="0.01" friction="0.01"/>
   </joint>
   <!-- ===================================================== -->
   <!-- Ear Joint Movement (gz-sim, Jazzy)                    -->
