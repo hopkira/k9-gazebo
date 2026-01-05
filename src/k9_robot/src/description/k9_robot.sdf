@@ -517,6 +517,12 @@
     <frame name="motors_link" attached_to="motors_joint">
       <pose>0 0 0 0 0 0</pose>
     </frame>
+    <frame name="camera_depth_frame_joint" attached_to="oakd_link">
+      <pose>0 0 0 0 0 0</pose>
+    </frame>
+    <frame name="camera_depth_frame" attached_to="camera_depth_frame_joint">
+      <pose>0 0 0 0 0 0</pose>
+    </frame>
     <frame name="oakd_link_joint" attached_to="base_link">
       <pose>0.26000000000000001 0 0.255 0 0 0</pose>
     </frame>
