@@ -377,10 +377,10 @@
         <lidar>
           <scan>
             <horizontal>
-              <samples>1</samples>
+              <samples>3</samples>
               <resolution>1</resolution>
-              <min_angle>0</min_angle>
-              <max_angle>0</max_angle>
+              <min_angle>-0.0050000000000000001</min_angle>
+              <max_angle>0.0050000000000000001</max_angle>
             </horizontal>
           </scan>
           <range>
@@ -448,10 +448,10 @@
         <lidar>
           <scan>
             <horizontal>
-              <samples>1</samples>
+              <samples>3</samples>
               <resolution>1</resolution>
-              <min_angle>0</min_angle>
-              <max_angle>0</max_angle>
+              <min_angle>-0.0050000000000000001</min_angle>
+              <max_angle>0.0050000000000000001</max_angle>
             </horizontal>
           </scan>
           <range>
@@ -475,6 +475,8 @@
       <max_angular_acceleration>0.21</max_angular_acceleration>
       <topic>/cmd_vel</topic>
       <odom_topic>/odom</odom_topic>
+      <odom_publish_frequency>50</odom_publish_frequency>
+      <tf_topic>/tf</tf_topic>
       <frame_id>odom</frame_id>
       <child_frame_id>base_footprint</child_frame_id>
     </plugin>
