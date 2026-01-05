@@ -102,6 +102,8 @@
           </range>
         </lidar>
         <pose>-0.112 0 0.59940000000000004 0 0 0</pose>
+        <gz_frame_id>base_laser</gz_frame_id>
+        <frame_id>base_laser</frame_id>
       </sensor>
       <sensor name="imu_link_sensor" type="imu">
         <topic>/k9/imu</topic>
@@ -387,6 +389,8 @@
             <resolution>0.001</resolution>
           </range>
         </lidar>
+        <gz_frame_id>l_ear_link</gz_frame_id>
+        <frame_id>l_ear_link</frame_id>
       </sensor>
     </link>
     <joint name="r_ear_joint" type="revolute">
@@ -456,6 +460,8 @@
             <resolution>0.001</resolution>
           </range>
         </lidar>
+        <gz_frame_id>r_ear_link</gz_frame_id>
+        <frame_id>r_ear_link</frame_id>
       </sensor>
     </link>
     <plugin name="gz::sim::systems::DiffDrive" filename="gz-sim-diff-drive-system">
@@ -518,7 +524,7 @@
       <pose>0 0 0 0 0 0</pose>
     </frame>
     <frame name="camera_depth_frame_joint" attached_to="oakd_link">
-      <pose>0 0 0 0 0 0</pose>
+      <pose>0 0 0 -1.5707963267948959 -5.5511151231257827e-17 -1.5707963267948959</pose>
     </frame>
     <frame name="camera_depth_frame" attached_to="camera_depth_frame_joint">
       <pose>0 0 0 0 0 0</pose>

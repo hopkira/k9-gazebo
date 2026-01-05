@@ -215,6 +215,8 @@
       <topic>/ld06/scan</topic>
       <pose>0 0 0 0 0 0</pose>
       <visualize>true</visualize>
+      <gz_frame_id>base_laser</gz_frame_id>
+      <frame_id>base_laser</frame_id>
       <lidar>
         <scan>
           <horizontal>
@@ -282,6 +284,8 @@
       <always_on>true</always_on>
       <visualize>true</visualize>
       <topic>/l_ear/scan</topic>
+      <gz_frame_id>l_ear_link</gz_frame_id>
+      <frame_id>l_ear_link</frame_id>
       <lidar>
         <scan>
           <horizontal>
@@ -333,6 +337,8 @@
       <always_on>true</always_on>
       <visualize>true</visualize>
       <topic>/r_ear/scan</topic>
+      <gz_frame_id>r_ear_link</gz_frame_id>
+      <frame_id>r_ear_link</frame_id>
       <lidar>
         <scan>
           <horizontal>
@@ -475,7 +481,7 @@
     <parent link="oakd_link"/>
     <!-- or oakd_link / 3dcam_link, whichever is your camera body -->
     <child link="camera_depth_frame"/>
-    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <origin rpy="-1.5707963267948966 0 -1.5707963267948966" xyz="0 0 0"/>
   </joint>
   <gazebo reference="oakd_link">
     <sensor name="oakd_link_rgbd" type="rgbd_camera">

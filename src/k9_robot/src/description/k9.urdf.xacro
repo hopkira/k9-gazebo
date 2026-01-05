@@ -398,6 +398,8 @@
       <topic>/ld06/scan</topic>
       <pose>0 0 0 0 0 0</pose>
       <visualize>true</visualize>
+      <gz_frame_id>base_laser</gz_frame_id>
+      <frame_id>base_laser</frame_id>
       <lidar>
         <scan>
           <horizontal>
@@ -453,6 +455,8 @@
       <always_on>true</always_on>
       <visualize>true</visualize>
       <topic>/l_ear/scan</topic>
+      <gz_frame_id>l_ear_link</gz_frame_id>
+      <frame_id>l_ear_link</frame_id>
       <lidar>
         <scan>
           <horizontal>
@@ -505,6 +509,8 @@
       <always_on>true</always_on>
       <visualize>true</visualize>
       <topic>/r_ear/scan</topic>
+      <gz_frame_id>r_ear_link</gz_frame_id>
+      <frame_id>r_ear_link</frame_id>
       <lidar>
         <scan>
           <horizontal>
