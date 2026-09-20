@@ -16,6 +16,10 @@ source /opt/ros/jazzy/setup.bash
 rosdep install --from-paths src --ignore-src -r -y
 colcon build --symlink-install
 source install/setup.bash
+# Keep simulation separate from K9 hardware (domain 9).
+export ROS_DOMAIN_ID=19 ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+export GZ_PARTITION=k9_model_validation
+unset CYCLONEDDS_URI
 ros2 launch k9_robot_bringup k9_robot_gazebo.launch.py
 ```
 
@@ -142,3 +146,9 @@ argument introspection now pass. The installed exporter runs successfully and
 `gz sdf -k` reports `Valid`, with extension warnings for sensor frame tags.
 The `gz_ros2_control` dependency belongs to simulation bring-up, so the shared
 description package no longer requires that simulation controller plugin.
+
+
+A live Jetson Orin NX run is now verified: GPU sensor rendering, controller
+activation, drive/stop behaviour, ear actuation and sensor TF. See
+[Jetson simulation validation](docs/SIMULATION_VALIDATION.md) for measurements,
+reproduction commands and remaining limits.
