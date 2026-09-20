@@ -14,7 +14,7 @@
   <exec_depend>ros_gz_sim</exec_depend>
   <exec_depend>ros_gz_bridge</exec_depend>
   <exec_depend>rviz2</exec_depend>
-
+  <exec_depend>k9_ros2_nav</exec_depend>
   <exec_depend>k9_description</exec_depend>
   <exec_depend>ament_index_python</exec_depend>
   <exec_depend>launch</exec_depend>

@@ -25,7 +25,10 @@ def launch_setup(context):
     controllers = str(description / 'config/controllers.yaml')
     robot_description = xacro.process_file(
         str(description / 'model/k9.urdf.xacro'),
-        mappings={'description_share': str(description), 'controllers_file': controllers},
+        mappings={'description_share': str(description),
+                  'controllers_file': controllers,
+                  'sim': 'true',
+        },
     ).toxml()
     simulation_sdf = generate_sdf(robot_description)
     world = LaunchConfiguration('world').perform(context)
@@ -34,6 +37,24 @@ def launch_setup(context):
         PythonLaunchDescriptionSource(str(
             Path(get_package_share_directory('ros_gz_sim')) / 'launch/gz_sim.launch.py')),
         launch_arguments={'gz_args': f'-r {"" if gui else "-s "}"{world}"'}.items(),
+    )
+    ld06_filter = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            str(
+                Path(
+                    get_package_share_directory("k9_ros2_nav")
+                ) / "launch/ld06_filter.launch.py"
+            )
+        )
+    )
+    oak_floor_filter = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            str(
+                Path(
+                    get_package_share_directory("k9_ros2_nav")
+                ) / "oak/oak_floor_filter.launch.py"
+            )
+        )
     )
     spawn = Node(
         package='ros_gz_sim', executable='create', output='screen',
@@ -85,6 +106,8 @@ def launch_setup(context):
         Node(package='ros_gz_bridge', executable='parameter_bridge',
              parameters=[{'config_file': str(bringup / 'config/gazebo_bridge.yaml'),
                           'use_sim_time': True}], output='screen'),
+        ld06_filter,
+        oak_floor_filter,
         spawn,
         Node(package='rviz2', executable='rviz2',
              arguments=['-d', str(description / 'rviz/urdf_config.rviz')],

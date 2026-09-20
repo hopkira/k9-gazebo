@@ -18,6 +18,8 @@
     <!-- This is the key one: runs all <sensor> blocks in models -->
     <plugin filename="gz-sim-sensors-system"
             name="gz::sim::systems::Sensors"/>
+            <render_engine>ogre2</render_engine>
+    </plugin>
 
     <!-- Lighting / ground, etc. -->
     <light name="sun" type="directional">

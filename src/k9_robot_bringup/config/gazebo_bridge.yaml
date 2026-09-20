@@ -1,4 +1,7 @@
-# Drive commands, odometry, TF and joint states are provided directly by ros2_control.
+# Drive commands, odometry, TF and joint states are provided directly
+# by ros2_control and therefore must not be bridged here.
+
+# Gazebo simulation clock
 - ros_topic_name: "/clock"
   gz_topic_name: "/clock"
   ros_type_name: "rosgraph_msgs/msg/Clock"
@@ -6,13 +9,16 @@
   direction: GZ_TO_ROS
   qos_profile: CLOCK
 
-- ros_topic_name: "/scan"
+# Raw simulated LD06 output. The same ROS filter used by the physical
+# LD06 converts /scan_raw into the navigation-facing /scan topic.
+- ros_topic_name: "/scan_raw"
   gz_topic_name: "/ld06/scan"
   ros_type_name: "sensor_msgs/msg/LaserScan"
   gz_type_name: "gz.msgs.LaserScan"
   direction: GZ_TO_ROS
   qos_profile: SENSOR_DATA
 
+# Simulated chassis IMU
 - ros_topic_name: "/k9/imu"
   gz_topic_name: "/k9/imu"
   ros_type_name: "sensor_msgs/msg/Imu"
@@ -20,6 +26,7 @@
   direction: GZ_TO_ROS
   qos_profile: SENSOR_DATA
 
+# Simulated ear sensors. These remain LaserScan topics in Gazebo.
 - ros_topic_name: "/l_ear/scan"
   gz_topic_name: "/l_ear/scan"
   ros_type_name: "sensor_msgs/msg/LaserScan"
@@ -34,21 +41,9 @@
   direction: GZ_TO_ROS
   qos_profile: SENSOR_DATA
 
-- ros_topic_name: "/oak/image"
-  gz_topic_name: "/oak/image"
-  ros_type_name: "sensor_msgs/msg/Image"
-  gz_type_name: "gz.msgs.Image"
-  direction: GZ_TO_ROS
-  qos_profile: SENSOR_DATA
+# Match the physical OAK depth-camera topic names.
 
-- ros_topic_name: "/oak/depth_image"
-  gz_topic_name: "/oak/depth_image"
-  ros_type_name: "sensor_msgs/msg/Image"
-  gz_type_name: "gz.msgs.Image"
-  direction: GZ_TO_ROS
-  qos_profile: SENSOR_DATA
-
-- ros_topic_name: "/oak/camera_info"
+- ros_topic_name: "/oak/stereo/camera_info"
   gz_topic_name: "/oak/camera_info"
   ros_type_name: "sensor_msgs/msg/CameraInfo"
   gz_type_name: "gz.msgs.CameraInfo"

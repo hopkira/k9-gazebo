@@ -34,7 +34,49 @@
   <!-- ===================================================== -->
   <xacro:property name="wheel_radius" value="0.0694"/>
   <xacro:property name="wheel_width"  value="0.025"/>
-  <xacro:property name="track"         value="0.2022"/>
+  <xacro:property name="track"        value="0.2022"/>
+
+  <!-- ===================================================== -->
+  <!-- Drive transmission and motor model                    -->
+  <!--                                                       -->
+  <!-- MY6812 brushed motors, supplied at 27.68 V.           -->
+  <!-- 16-tooth motor pulley to 88-tooth wheel pulley.       -->
+  <!-- Motor constants and rotor inertia remain provisional  -->
+  <!-- until measured on K9's actual motors.                 -->
+  <!-- ===================================================== -->
+  <xacro:property name="motor_pulley_teeth" value="16.0"/>
+  <xacro:property name="wheel_pulley_teeth" value="88.0"/>
+  <xacro:property name="drive_reduction"
+                  value="${wheel_pulley_teeth / motor_pulley_teeth}"/>
+
+  <xacro:property name="motor_supply_voltage" value="27.68"/>
+  <xacro:property name="motor_back_emf_constant" value="0.082"/>
+  <xacro:property name="motor_torque_constant" value="0.082"/>
+  <xacro:property name="motor_current_limit" value="15.0"/>
+  <xacro:property name="belt_efficiency" value="0.90"/>
+
+  <!-- Theoretical no-load speeds: approximately 337.6 rad/s
+       at the motor and 61.4 rad/s at the wheel. -->
+  <xacro:property name="motor_no_load_speed"
+                  value="${motor_supply_voltage / motor_back_emf_constant}"/>
+  <xacro:property name="wheel_max_speed"
+                  value="${motor_no_load_speed / drive_reduction}"/>
+
+  <!-- Short-duration wheel effort at the RoboClaw's 15 A
+       per-channel current limit: approximately 6.09 N m. -->
+  <xacro:property name="wheel_max_effort"
+                  value="${motor_torque_constant
+                           * motor_current_limit
+                           * drive_reduction
+                           * belt_efficiency}"/>
+
+  <!-- Estimated motor inertia reflected to the wheel shaft:
+       0.00003 * 5.5^2 = 0.0009075 kg m^2. -->
+  <xacro:property name="motor_rotor_inertia" value="0.00003"/>
+  <xacro:property name="reflected_motor_inertia"
+                  value="${motor_rotor_inertia
+                           * drive_reduction
+                           * drive_reduction}"/>
 
   <!-- Ball caster -->
   <xacro:property name="ball_radius"  value="0.04"/>
@@ -199,10 +241,10 @@
     </joint>
 
     <!-- Depth frame used by Gazebo / depthimage_to_laserscan -->
-    <link name="camera_depth_frame"/>
-    <joint name="camera_depth_frame_joint" type="fixed">
-      <parent link="oakd_link"/>   <!-- or oakd_link / 3dcam_link, whichever is your camera body -->
-      <child  link="camera_depth_frame"/>
+    <link name="oak_rgb_camera_optical_frame"/>
+    <joint name="oak_rgb_camera_optical_frame_joint" type="fixed">
+      <parent link="${oak_link}"/>
+      <child link="oak_rgb_camera_optical_frame"/>
       <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
     </joint>
 
@@ -344,12 +386,13 @@
           <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
         </geometry>
       </collision>
-      <!-- Solid 1 kg cylinder; its axle is Y in the link frame. -->
+      <!-- Solid 1 kg cylinder plus motor inertia reflected through
+           the 5.5:1 belt reduction; axle is Y in the link frame. -->
       <inertial>
         <mass value="1.0"/>
         <inertia
           ixx="${(3*wheel_radius*wheel_radius+wheel_width*wheel_width)/12}" ixy="0" ixz="0"
-          iyy="${wheel_radius*wheel_radius/2}" iyz="0"
+          iyy="${wheel_radius*wheel_radius/2 + reflected_motor_inertia}" iyz="0"
           izz="${(3*wheel_radius*wheel_radius+wheel_width*wheel_width)/12}"/>
       </inertial>
     </link>
@@ -364,7 +407,11 @@
       <child link="${name}_link"/>
       <origin xyz="0 ${y} 0"/>
       <axis xyz="0 1 0"/>
-      <dynamics damping="0.05"/>
+      <!-- Wheel-side limits derived from the motor, 27.68 V supply,
+           5.5:1 belt reduction and 15 A controller current limit. -->
+      <limit effort="${wheel_max_effort}"
+             velocity="${wheel_max_speed}"/>
+      <dynamics damping="0.02" friction="0.04"/>
     </joint>
   </xacro:macro>
 
@@ -596,14 +643,22 @@
       </hardware>
 
       <joint name="drivewhl_l_joint">
-        <command_interface name="velocity"/>
+        <command_interface name="velocity">
+          <param name="min">${-wheel_max_speed}</param>
+          <param name="max">${wheel_max_speed}</param>
+        </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
+        <state_interface name="effort"/>
       </joint>
       <joint name="drivewhl_r_joint">
-        <command_interface name="velocity"/>
+        <command_interface name="velocity">
+          <param name="min">${-wheel_max_speed}</param>
+          <param name="max">${wheel_max_speed}</param>
+        </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
+        <state_interface name="effort"/>
       </joint>
       <joint name="l_ear_joint">
         <command_interface name="position"/>
@@ -638,7 +693,7 @@
     xyz="0.26 0 0.255"
     rpy="0 0 0"
     gz_topic="/oak"
-    frame_id="camera_depth_frame"/>
+    frame_id="oak_rgb_camera_optical_frame"/>
 
   <!-- One controller manager owns wheel and ear command interfaces. -->
   <xacro:if value="$(arg sim)">
