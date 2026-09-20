@@ -1,0 +1,30 @@
+#!/usr/bin/env python3
+"""Export exactly the model used by K9's simulation launch."""
+import argparse
+from pathlib import Path
+
+from ament_index_python.packages import get_package_share_directory
+import xacro
+
+from k9_robot_bringup.model import generate_sdf
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('output_directory', nargs='?', default='/tmp/k9-generated-model')
+    args = parser.parse_args()
+    share = Path(get_package_share_directory('k9_description'))
+    urdf = xacro.process_file(str(share / 'model/k9.urdf.xacro'), mappings={
+        'description_share': str(share),
+        'controllers_file': str(share / 'config/controllers.yaml'),
+    }).toxml()
+    sdf = generate_sdf(urdf)
+    output = Path(args.output_directory)
+    output.mkdir(parents=True, exist_ok=True)
+    (output / 'k9.urdf').write_text(urdf)
+    (output / 'k9_robot.sdf').write_text(sdf)
+    print('Generated model: ' + str(output / 'k9_robot.sdf'))
+
+
+if __name__ == '__main__':
+    main()

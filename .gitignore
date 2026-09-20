@@ -53,3 +53,8 @@ qtcreator-*
 CATKIN_IGNORE
 .vscode/settings.json
 .vscode/settings.json
+
+# Generated model exports (regenerate with description/gen.sh)
+src/k9_robot/src/description/k9.urdf
+src/k9_robot/src/description/k9_raw.sdf
+src/k9_robot/src/description/k9_robot.sdf

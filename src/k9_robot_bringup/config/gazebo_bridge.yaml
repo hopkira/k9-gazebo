@@ -1,24 +1,63 @@
+# Drive commands, odometry, TF and joint states are provided directly by ros2_control.
 - ros_topic_name: "/clock"
   gz_topic_name: "/clock"
   ros_type_name: "rosgraph_msgs/msg/Clock"
   gz_type_name: "gz.msgs.Clock"
   direction: GZ_TO_ROS
+  qos_profile: CLOCK
 
-- ros_topic_name: "/joint_states"
-  gz_topic_name: "/world/empty/model/k9_robot/joint_state"
-  ros_type_name: "sensor_msgs/msg/JointState"
-  gz_type_name: "gz.msgs.Model"
+- ros_topic_name: "/scan"
+  gz_topic_name: "/ld06/scan"
+  ros_type_name: "sensor_msgs/msg/LaserScan"
+  gz_type_name: "gz.msgs.LaserScan"
   direction: GZ_TO_ROS
+  qos_profile: SENSOR_DATA
 
-- ros_topic_name: "/tf"
-  gz_topic_name: "/model/k9_robot/tf"
-  ros_type_name: "tf2_msgs/msg/TFMessage"
-  gz_type_name: "gz.msgs.Pose_V"
+- ros_topic_name: "/k9/imu"
+  gz_topic_name: "/k9/imu"
+  ros_type_name: "sensor_msgs/msg/Imu"
+  gz_type_name: "gz.msgs.IMU"
   direction: GZ_TO_ROS
+  qos_profile: SENSOR_DATA
 
-- ros_topic_name: "/cmd_vel"
-  gz_topic_name: "/model/k9_robot/cmd_vel"
-  ros_type_name: "geometry_msgs/msg/Twist"
-  gz_type_name: "gz.msgs.Twist"
-  direction: ROS_TO_GZ
-  
+- ros_topic_name: "/l_ear/scan"
+  gz_topic_name: "/l_ear/scan"
+  ros_type_name: "sensor_msgs/msg/LaserScan"
+  gz_type_name: "gz.msgs.LaserScan"
+  direction: GZ_TO_ROS
+  qos_profile: SENSOR_DATA
+
+- ros_topic_name: "/r_ear/scan"
+  gz_topic_name: "/r_ear/scan"
+  ros_type_name: "sensor_msgs/msg/LaserScan"
+  gz_type_name: "gz.msgs.LaserScan"
+  direction: GZ_TO_ROS
+  qos_profile: SENSOR_DATA
+
+- ros_topic_name: "/oak/image"
+  gz_topic_name: "/oak/image"
+  ros_type_name: "sensor_msgs/msg/Image"
+  gz_type_name: "gz.msgs.Image"
+  direction: GZ_TO_ROS
+  qos_profile: SENSOR_DATA
+
+- ros_topic_name: "/oak/depth_image"
+  gz_topic_name: "/oak/depth_image"
+  ros_type_name: "sensor_msgs/msg/Image"
+  gz_type_name: "gz.msgs.Image"
+  direction: GZ_TO_ROS
+  qos_profile: SENSOR_DATA
+
+- ros_topic_name: "/oak/camera_info"
+  gz_topic_name: "/oak/camera_info"
+  ros_type_name: "sensor_msgs/msg/CameraInfo"
+  gz_type_name: "gz.msgs.CameraInfo"
+  direction: GZ_TO_ROS
+  qos_profile: SENSOR_DATA
+
+- ros_topic_name: "/oak/points"
+  gz_topic_name: "/oak/points"
+  ros_type_name: "sensor_msgs/msg/PointCloud2"
+  gz_type_name: "gz.msgs.PointCloudPacked"
+  direction: GZ_TO_ROS
+  qos_profile: SENSOR_DATA

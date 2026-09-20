@@ -1,11 +1,13 @@
 <?xml version="1.0"?>
 <robot name="k9_robot" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:arg name="description_share" default="$(find k9_description)"/>
+  <xacro:arg name="controllers_file" default="$(find k9_description)/config/controllers.yaml"/>
+  <xacro:arg name="sim" default="true"/>
 
   <!-- ===================================================== -->
   <!-- To generate SDF for Gazebo Sim                        -->
-  <!-- ros2 run xacro xacro k9.urdf.xacro > k9.urdf          -->
-  <!-- gz sdf -p k9.urdf > k9_raw.sdf                        -->
-  <!-- python3 patch_friction.py k9_raw.sdf k9_robot.sdf     -->
+  <!-- Source the built workspace, then run gen.sh.          -->
+  <!-- Exports are generated outside the source tree.        -->
   <!-- ===================================================== -->
 
   <!-- ===================================================== -->
@@ -53,6 +55,15 @@
     </inertial>
   </xacro:macro>
 
+  <!-- Uniform-density approximations; dimensions are in metres. -->
+  <xacro:macro name="box_inertial" params="m x y z">
+    <inertial>
+      <mass value="${m}"/>
+      <inertia ixx="${m*(y*y+z*z)/12}" iyy="${m*(x*x+z*z)/12}"
+               izz="${m*(x*x+y*y)/12}" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </xacro:macro>
+
   <!-- ===================================================== -->
   <!-- IMU (Gazebo Sim) helper macro                          -->
   <!-- ===================================================== -->
@@ -87,6 +98,7 @@
     <gazebo reference="${imu_link}">
       <sensor name="${imu_link}_sensor" type="imu">
         <topic>/k9/imu</topic>
+        <gz_frame_id>${imu_link}</gz_frame_id>
         <always_on>true</always_on>
         <visualize>false</visualize>
         <update_rate>${update_rate}</update_rate>
@@ -200,6 +212,7 @@
         <visualize>false</visualize>
         <update_rate>${update_rate}</update_rate>
         <topic>${gz_topic}</topic>
+        <gz_frame_id>${frame_id}</gz_frame_id>
         <camera>
           <horizontal_fov>${hfov}</horizontal_fov>
           <image>
@@ -235,18 +248,24 @@
     <visual>
       <origin xyz="-0.5 1.905 ${-wheel_radius}" rpy="0 0 ${pi}"/>
       <geometry>
-        <mesh filename="file:///home/hopkira/Documents/GitHub/k9-gazebo/src/k9_description/urdf/k9.stl"
+        <mesh filename="file://$(arg description_share)/urdf/k9.stl"
               scale="0.01 0.01 0.01"/>
       </geometry>
       <material name="K9_grey"/>
     </visual>
 
-    <!-- Collision -->
-    <collision>
-      <origin xyz="0.0 0.0 0.44"/>
-      <geometry>
-        <box size="1.05 0.49 0.74"/>
-      </geometry>
+    <!-- Conservative body / head envelopes fitted to k9.stl.
+         Heights below are measured from the ground, then shifted into base_link.
+         The body includes the skirt and back-panel fittings; the head includes
+         ears. Boxes intentionally approximate the sloping shell (see docs/PHYSICS.md).
+         Default self-collision remains off: wheels sit inside the body envelope. -->
+    <collision name="body_collision">
+      <origin xyz="-0.1175 0 ${0.29-wheel_radius}"/>
+      <geometry><box size="0.815 0.49 0.50"/></geometry>
+    </collision>
+    <collision name="head_collision">
+      <origin xyz="0.329 0 ${0.6275-wheel_radius}"/>
+      <geometry><box size="0.404 0.174 0.265"/></geometry>
     </collision>
 
     <!-- Inertia: main shell + structure -->
@@ -280,7 +299,7 @@
         <box size="0.25 0.20 0.25"/>
       </geometry>
     </collision>
-    <xacro:tiny_inertial m="5.0"/>
+    <xacro:box_inertial m="5.0" x="0.25" y="0.20" z="0.25"/>
   </link>
 
   <joint name="battery_joint" type="fixed">
@@ -298,7 +317,7 @@
         <box size="0.20 0.20 0.10"/>
       </geometry>
     </collision>
-    <xacro:tiny_inertial m="3.0"/>
+    <xacro:box_inertial m="3.0" x="0.20" y="0.20" z="0.10"/>
   </link>
 
   <joint name="motors_joint" type="fixed">
@@ -325,18 +344,19 @@
           <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
         </geometry>
       </collision>
+      <!-- Solid 1 kg cylinder; its axle is Y in the link frame. -->
       <inertial>
         <mass value="1.0"/>
         <inertia
-          ixx="0.002" ixy="0" ixz="0"
-          iyy="0.002" iyz="0"
-          izz="0.004"/>
+          ixx="${(3*wheel_radius*wheel_radius+wheel_width*wheel_width)/12}" ixy="0" ixz="0"
+          iyy="${wheel_radius*wheel_radius/2}" iyz="0"
+          izz="${(3*wheel_radius*wheel_radius+wheel_width*wheel_width)/12}"/>
       </inertial>
     </link>
 
     <gazebo reference="${name}_link">
-      <mu1>0.9</mu1>
-      <mu2>0.7</mu2>
+      <mu1>1.1</mu1>
+      <mu2>0.9</mu2>
     </gazebo>
 
     <joint name="${name}_joint" type="continuous">
@@ -366,7 +386,12 @@
         <sphere radius="${ball_radius}"/>
       </geometry>
     </collision>
-    <xacro:tiny_inertial m="0.5"/>
+    <inertial>
+      <mass value="0.5"/>
+      <inertia ixx="${2*0.5*ball_radius*ball_radius/5}"
+               iyy="${2*0.5*ball_radius*ball_radius/5}"
+               izz="${2*0.5*ball_radius*ball_radius/5}" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
   </link>
 
   <gazebo reference="ball_caster_link">
@@ -374,6 +399,12 @@
     <mu2>0.2</mu2>
   </gazebo>
 
+  <!-- URDF has no spherical joint. Keep this nominal frame for ROS; the shared
+       SDF export step replaces this preserved joint with a native passive ball
+       joint. A sphere has no meaningful visual orientation and carries no sensor. -->
+  <gazebo reference="ball_caster_joint">
+    <preserveFixedJoint>true</preserveFixedJoint>
+  </gazebo>
   <joint name="ball_caster_joint" type="fixed">
     <parent link="base_link"/>
     <child link="ball_caster_link"/>
@@ -383,7 +414,7 @@
   <!-- ===================================================== -->
   <!-- Sensors                                               -->
   <!-- ===================================================== -->
-  <!-- started at 0.565 raised by 20 cm to clear body       -->
+  <!-- Back-panel lidar intentionally sees the head in its forward sector. -->
   
   <link name="base_laser"><xacro:tiny_inertial m="0.05"/></link>
   <joint name="base_laser_joint" type="fixed">
@@ -448,15 +479,23 @@
     <xacro:tiny_inertial m="0.05"/>
   </link>
 
+  <!-- Sensor mount is 30 degrees below the rotating ear; servo axis tilts 7 degrees. -->
+  <link name="l_ear_sensor_link"/>
+  <joint name="l_ear_sensor_joint" type="fixed">
+    <parent link="l_ear_link"/>
+    <child link="l_ear_sensor_link"/>
+    <origin xyz="0.0075 0 0" rpy="0 ${pi/6} 0"/>
+  </joint>
+
   <gazebo reference="l_ear_link">
     <sensor name="l_ear_tof" type="gpu_lidar">
-      <pose>0.0075 0 0 0 0 0</pose>
+      <pose>0.0075 0 0 0 ${pi/6} 0</pose>
       <update_rate>30</update_rate>
       <always_on>true</always_on>
       <visualize>true</visualize>
       <topic>/l_ear/scan</topic>
-      <gz_frame_id>l_ear_link</gz_frame_id>
-      <frame_id>l_ear_link</frame_id>
+      <gz_frame_id>l_ear_sensor_link</gz_frame_id>
+      <frame_id>l_ear_sensor_link</frame_id>
       <lidar>
         <scan>
           <horizontal>
@@ -478,7 +517,7 @@
   <joint name="l_ear_joint" type="revolute">
     <parent link="base_link"/>
     <child link="l_ear_link"/>
-    <origin xyz="0.27 0.0425 0.67" rpy="0.0 0.25 0.0"/>
+    <origin xyz="0.27 0.0425 0.67" rpy="0 ${7*pi/180} 0"/>
     <axis xyz="0 0 1"/>
     <limit lower="-0.2" upper="0.6" effort="2.0" velocity="10"/>
     <dynamics friction="0.01" damping="0.01"/>
@@ -502,15 +541,23 @@
     <xacro:tiny_inertial m="0.05"/>
   </link>
 
+  <!-- Sensor mount is 30 degrees below the rotating ear; servo axis tilts 7 degrees. -->
+  <link name="r_ear_sensor_link"/>
+  <joint name="r_ear_sensor_joint" type="fixed">
+    <parent link="r_ear_link"/>
+    <child link="r_ear_sensor_link"/>
+    <origin xyz="0.0075 0 0" rpy="0 ${pi/6} 0"/>
+  </joint>
+
   <gazebo reference="r_ear_link">
     <sensor name="r_ear_tof" type="gpu_lidar">
-      <pose>0.0075 0 0 0 0 0</pose>
+      <pose>0.0075 0 0 0 ${pi/6} 0</pose>
       <update_rate>30</update_rate>
       <always_on>true</always_on>
       <visualize>true</visualize>
       <topic>/r_ear/scan</topic>
-      <gz_frame_id>r_ear_link</gz_frame_id>
-      <frame_id>r_ear_link</frame_id>
+      <gz_frame_id>r_ear_sensor_link</gz_frame_id>
+      <frame_id>r_ear_sensor_link</frame_id>
       <lidar>
         <scan>
           <horizontal>
@@ -532,33 +579,45 @@
   <joint name="r_ear_joint" type="revolute">
     <parent link="base_link"/>
     <child link="r_ear_link"/>
-    <origin xyz="0.27 -0.0425 0.67" rpy="0.0 0.25 0.0"/>
+    <origin xyz="0.27 -0.0425 0.67" rpy="0 ${7*pi/180} 0"/>
     <axis xyz="0 0 1"/>
     <limit lower="-0.6" upper="0.2" effort="2.0" velocity="10"/>
     <dynamics friction="0.01" damping="0.01"/>
   </joint>
 
   <!-- ===================================================== -->
-  <!-- Ear Joint Movement (gz-sim, Jazzy)                    -->
+  <!-- Wheel and ear joint control (gz-sim, Jazzy)            -->
   <!-- ===================================================== -->
 
-  <ros2_control name="K9EarsSystem" type="system">
-    <hardware>
-      <plugin>gz_ros2_control/GazeboSimSystem</plugin>
-    </hardware>
+  <xacro:if value="$(arg sim)">
+    <ros2_control name="K9SimSystem" type="system">
+      <hardware>
+        <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+      </hardware>
 
-    <joint name="l_ear_joint">
-      <command_interface name="position"/>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
+      <joint name="drivewhl_l_joint">
+        <command_interface name="velocity"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+      </joint>
+      <joint name="drivewhl_r_joint">
+        <command_interface name="velocity"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+      </joint>
+      <joint name="l_ear_joint">
+        <command_interface name="position"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+      </joint>
 
-    <joint name="r_ear_joint">
-      <command_interface name="position"/>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-  </ros2_control>
+      <joint name="r_ear_joint">
+        <command_interface name="position"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+      </joint>
+    </ros2_control>
+  </xacro:if>
 
   <!-- ===================================================== -->
   <!-- IMU (gz-sim, Jazzy)                                   -->
@@ -579,41 +638,15 @@
     xyz="0.26 0 0.255"
     rpy="0 0 0"
     gz_topic="/oak"
-    frame_id="oak_depth_frame"/>
+    frame_id="camera_depth_frame"/>
 
-  <!-- ===================================================== -->
-  <!-- Gazebo Diff Drive (gz-sim, Jazzy)                     -->
-  <!-- ===================================================== -->
-  <gazebo>
-    <plugin filename="gz-sim-diff-drive-system"
-            name="gz::sim::systems::DiffDrive">
-      <left_joint>drivewhl_l_joint</left_joint>
-      <right_joint>drivewhl_r_joint</right_joint>
-
-      <wheel_separation>${track}</wheel_separation>
-      <wheel_radius>${wheel_radius}</wheel_radius>
-
-      <max_linear_velocity>1.4</max_linear_velocity>
-      <max_angular_velocity>0.63</max_angular_velocity>
-
-      <!-- CHANGED: lower accel also caps braking decel (less "nose dive") -->
-      <max_linear_acceleration>0.28</max_linear_acceleration>
-
-      <max_angular_acceleration>0.21</max_angular_acceleration>
-
-      <topic>/cmd_vel_nav</topic>
-      <odom_topic>/odom</odom_topic>
-      <odom_publish_frequency>50</odom_publish_frequency>
-       <tf_topic>/tf</tf_topic>
-      <frame_id>odom</frame_id>
-      <child_frame_id>base_footprint</child_frame_id>
-    </plugin>
-  </gazebo>
-  
-  <gazebo>
-    <plugin name="gz_ros2_control::GazeboSimROS2ControlPlugin" filename="/opt/ros/jazzy/lib/libgz_ros2_control-system.so">
-      <parameters>/home/hopkira/Documents/GitHub/k9-gazebo/src/k9_robot/src/description/ear_controllers.yaml</parameters>
-    </plugin>
-  </gazebo>
-
+  <!-- One controller manager owns wheel and ear command interfaces. -->
+  <xacro:if value="$(arg sim)">
+    <gazebo>
+      <plugin name="gz_ros2_control::GazeboSimROS2ControlPlugin"
+              filename="libgz_ros2_control-system.so">
+        <parameters>$(arg controllers_file)</parameters>
+      </plugin>
+    </gazebo>
+  </xacro:if>
 </robot>

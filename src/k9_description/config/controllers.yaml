@@ -1,0 +1,44 @@
+controller_manager:
+  ros__parameters:
+    use_sim_time: true
+    update_rate: 100
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+    diff_drive_controller:
+      type: diff_drive_controller/DiffDriveController
+    ears_position_controller:
+      type: forward_command_controller/ForwardCommandController
+
+diff_drive_controller:
+  ros__parameters:
+    use_sim_time: true
+    left_wheel_names: [drivewhl_l_joint]
+    right_wheel_names: [drivewhl_r_joint]
+    wheel_separation: 0.2022
+    wheel_radius: 0.0694
+    position_feedback: true
+    open_loop: false
+    odom_frame_id: odom
+    base_frame_id: base_footprint
+    tf_frame_prefix_enable: false
+    enable_odom_tf: true
+    publish_rate: 50.0
+    cmd_vel_timeout: 0.5
+    linear.x.max_velocity: 1.4
+    linear.x.min_velocity: -1.4
+    linear.x.max_acceleration: 0.28
+    linear.x.max_deceleration: -0.28
+    angular.z.max_velocity: 0.63
+    angular.z.min_velocity: -0.63
+    angular.z.max_acceleration: 0.21
+    angular.z.max_deceleration: -0.21
+
+joint_state_broadcaster:
+  ros__parameters:
+    use_sim_time: true
+
+ears_position_controller:
+  ros__parameters:
+    use_sim_time: true
+    joints: [l_ear_joint, r_ear_joint]
+    interface_name: position

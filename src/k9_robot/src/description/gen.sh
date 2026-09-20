@@ -1,17 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Run from the directory where the xacro and patch script live
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "$SCRIPT_DIR"
-
-echo "[1/4] Generating URDF from xacro..."
-ros2 run xacro xacro k9.urdf.xacro > k9.urdf
-
-echo "[2/4] Converting URDF -> SDF..."
-gz sdf -p k9.urdf > k9_raw.sdf
-
-echo "[3/4] Patching friction..."
-python3 patch_friction.py k9_raw.sdf k9_robot.sdf
-
-echo "[4/4] Done. Output: $SCRIPT_DIR/k9_robot.sdf"
+# Source the built workspace first. The same converter is used by the launch:
+# expand Xacro, convert with gz sdf, and replace the preserved caster joint with
+# a native SDF ball joint. Do not spawn raw URDF: it retains a fixed caster frame.
+exec ros2 run k9_robot_bringup export_model "${1:-/tmp/k9-generated-model}"
